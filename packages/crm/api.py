@@ -1,4 +1,5 @@
 import logging
+import time
 from typing import Any, Literal
 from packages.crm.fetch_xml import FetchXML
 from packages.crm.protocols import AuthenticateProtocol
@@ -33,15 +34,23 @@ class CrmApi:
         headers: dict[str, str] | Headers = {},
         data: None | dict[str, Any] = None,
     ):
+
+        start = time.time()
+
         if not self.authenticator:
             raise ValueError("Authenticator not set")
 
         if not self.authenticator.is_authenticated:
-            if not (await self.authenticator.login()).is_authenticated:
-                raise ValueError("Authentication failed")
+            _ = await self.authenticator.login()
+            # if not (await self.authenticator.login()).is_authenticated:
+            #     raise ValueError("Authentication failed")
             self._client.cookies = self.authenticator.cookies_as_tuples()
 
         # print(f"Requesting {method} {url} with parameters {parameters}")
+
+        end = time.time()
+
+        logger.debug(f"Auth validation took {end - start} seconds")
 
         return await self._client.request(
             method=method, url=url, params=parameters, data=data, headers=headers

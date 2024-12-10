@@ -22,7 +22,6 @@ class Authenticate:
     async def login(self, user: User | None = None):
 
         if self.is_authenticated:
-            self.load_cookies()
             return self
 
         _user = user or self._user
@@ -153,6 +152,7 @@ class Authenticate:
             with open(self._cookie_file_path, "r") as f:
                 data = json.load(f)
                 self._cookies = {c: Cookie.from_json(data[c]) for c in data}
+        return self
 
     @property
     def cookies(self):
@@ -162,7 +162,7 @@ class Authenticate:
     def is_authenticated(self):
         if not self.cookies:
             print("There is no cookies, try to load cookies")
-            self.load_cookies()
+            _ = self.load_cookies()
 
         auth_cookie = self.cookies.get("CrmOwinAuth")
 

@@ -1,10 +1,12 @@
-import json
-from dataclasses import asdict
+import logging
+import time
 from app.config import Config
 from packages.crm.api import CrmApi
 from packages.crm.auth import Authenticate
 from packages.crm.fetch_xml import FetchXML
-from packages.crm.protocols import Cookie, User
+from packages.crm.protocols import User
+
+logging.basicConfig(level=logging.INFO)
 
 
 async def main() -> None:
@@ -76,6 +78,19 @@ async def main() -> None:
 
     _ = fetch.build()
 
-    result = await api.fetch_xml_request(fetch)
+    # result = await api.fetch_xml_request(fetch)
 
-    print(result)
+    # print(result)
+
+    while True:
+        y_n = input("Do you want to continue? (y/n): ")
+        if y_n.lower() == "n":
+            break
+
+        start = time.time()
+        result = await api.fetch_xml_request(fetch)
+        end = time.time()
+
+        print(f"Total time for request: {end - start}")
+
+        # print(result)
