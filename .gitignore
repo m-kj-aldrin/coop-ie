@@ -13,3 +13,4 @@ wheels/
 app/data
 
 .DS_Store
+**/.DS_Store
