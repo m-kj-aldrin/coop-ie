@@ -12,9 +12,12 @@ class Authenticate:
     _user: User | None = None
     _cookie_file_path: str = os.path.join(os.getcwd(), "app", "data", "cookies.json")
     _login_url: str
+    _redirect_url: str
 
-    def __init__(self, login_url: str):
+    def __init__(self, login_url: str, redirect_url: str):
         self._login_url = login_url
+        self._redirect_url = redirect_url
+        self.load_cookies()
 
     async def login(self, user: User | None = None):
 
@@ -117,7 +120,7 @@ class Authenticate:
                 if not self.cookies:
                     return self
 
-                await self.save_cookies()
+                self.save_cookies()
                 return self
 
             except TimeoutError:
@@ -125,12 +128,13 @@ class Authenticate:
 
     def logout(self):
         self._user = None
+        self._cookies = {}
         return self
 
     def cookies_as_tuples(self):
         return [(c.name, c.value) for c in self._cookies.values()]
 
-    async def save_cookies(self):
+    def save_cookies(self):
         """
         Save current cookies to the cookies file.
         """
@@ -148,9 +152,7 @@ class Authenticate:
         if os.path.exists(self._cookie_file_path):
             with open(self._cookie_file_path, "r") as f:
                 data = json.load(f)
-                self._cookies = {
-                    c: Cookie.from_json(data[c]) for c in data if c in self._cookies
-                }
+                self._cookies = {c: Cookie.from_json(data[c]) for c in data}
 
     @property
     def cookies(self):
@@ -159,10 +161,14 @@ class Authenticate:
     @property
     def is_authenticated(self):
         if not self.cookies:
+            print("There is no cookies, try to load cookies")
             self.load_cookies()
 
-        current_time = time.time()
         auth_cookie = self.cookies.get("CrmOwinAuth")
+
+        # print(f"Cookies: {self.cookies}")
+
+        # print(f"Auth cookie: {auth_cookie}")
 
         if not auth_cookie:
             return False
@@ -172,7 +178,12 @@ class Authenticate:
         if not expires:
             return False
 
+        current_time = time.time()
+
         if expires < current_time:
+            print("Auth cookie is expired")
             return False
+
+        # print("Auth cookie is valid")
 
         return True
