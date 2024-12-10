@@ -1,16 +1,16 @@
+import json
 import logging
 import time
 from app.config import Config
 from packages.crm.api import CrmApi
 from packages.crm.auth import Authenticate
-from packages.crm.fetch_xml import FetchXML
+from packages.crm.fetch_xml import Attribute, FetchXML, FilterCondition
 from packages.crm.protocols import User
 
-logging.basicConfig(level=logging.INFO)
+# logging.basicConfig(level=logging.ERROR)
 
 
 async def main() -> None:
-
     config = Config.load()
 
     user = User(username=config.username, password=config.password)
@@ -29,47 +29,46 @@ async def main() -> None:
 
     entity = (
         FetchXML.entity("incident")
-        .set_attributes(["ticketnumber", "title", "createdon", "ownerid"])
+        .set_attributes(
+            Attribute("ticketnumber"),
+            Attribute("title"),
+            Attribute("createdon"),
+            Attribute("ownerid"),
+        )
         .set_filters(
-            [
-                {"attribute": "ownerid", "operator": "eq-userid"},
-                {"attribute": "statecode", "operator": "eq", "value": "0"},
-            ],
-            filter_type="and",
+            FilterCondition("ownerid", "eq-userid"),
+            FilterCondition("statecode", "eq", "0"),
+            type="and",
         )
     )
 
     contact_link = (
         FetchXML.link(
             name="contact",
-            from_attribute="contactid",
-            to_attribute="customerid",
+            from_attribute=Attribute("contactid"),
+            to_attribute=Attribute("customerid"),
             link_type="inner",
             alias="contact",
         )
         .set_order("fullname", descending=False)
         .set_attributes(
-            [
-                "coop_external_customer_id",
-                "contactid",
-                "fullname",
-                "emailaddress1",
-            ]
+            Attribute("coop_external_customer_id"),
+            Attribute("contactid"),
+            Attribute("fullname"),
+            Attribute("emailaddress1"),
         )
     )
 
     related_incidents_link = FetchXML.link(
         name="incident",
-        from_attribute="customerid",
-        to_attribute="contactid",
+        from_attribute=Attribute("customerid"),
+        to_attribute=Attribute("contactid"),
         link_type="inner",
         alias="related_incidents",
     ).set_attributes(
-        [
-            "ticketnumber",
-            "title",
-            "createdon",
-        ]
+        Attribute("ticketnumber"),
+        Attribute("title"),
+        Attribute("createdon"),
     )
 
     _ = contact_link.set_links([related_incidents_link])
@@ -93,4 +92,5 @@ async def main() -> None:
 
         print(f"Total time for request: {end - start}")
 
-        # print(result)
+        dump = json.dumps(result, indent=4)
+        print(dump)

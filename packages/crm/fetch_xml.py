@@ -1,39 +1,62 @@
+from dataclasses import dataclass
 import logging
-from typing import Literal
+from typing import Any, Literal
 
 
 # Configure logging
 logger = logging.getLogger(__name__)
 
 
+@dataclass
+class FilterCondition:
+    attribute: str
+    operator: str
+    value: str | None = None
+
+
+@dataclass
+class Filter:
+    type: Literal["and", "or"]
+    conditions: tuple[FilterCondition, ...]
+
+
+@dataclass
+class Attribute:
+    name: str
+
+
+EntityNames = Literal["incident", "contact"]
+
+
 class Entity:
     """Base class for both main entity and linked entities"""
 
-    name: str
-    attributes: list[str]
-    filters: list[dict[Literal["type", "conditions"], Literal["and", "or"] | list[dict[Literal["attribute", "operator", "value"], str]]]]
+    attributes: tuple[Attribute, ...]
+    filters: list[Filter]
     links: list["LinkedEntity"]
     orders: list[dict[str, str]]
+    name: EntityNames
 
-    def __init__(self, name):
+    def __init__(self, name: EntityNames):
         self.name = name
-        self.attributes = []
+        self.attributes = ()
         self.filters = []
         self.links = []
         self.orders = []
 
-    def set_attributes(self, attributes: list[str]):
+    def set_attributes(self, *attributes: Attribute):
         """Set attributes to fetch from the entity"""
         self.attributes = attributes
         return self
 
     def set_filters(
         self,
-        conditions: list[dict[Literal["attribute", "operator", "value"], str]],
-        filter_type: Literal["and", "or"] = "and",
+        *conditions: FilterCondition,
+        type: Literal["and", "or"] = "and",
     ):
         """Set filter conditions for the entity"""
-        self.filters = [{"type": filter_type, "conditions": conditions}]
+        filter = Filter(type=type, conditions=conditions)
+        self.filters = [filter]
         return self
 
     def set_links(self, links: list["LinkedEntity"]):
@@ -51,38 +74,39 @@ class Entity:
             descending: Whether to order in descending order
             entityname: Optional entity name for linked entity ordering
         """
-        self.orders = [
-            {"attribute": attribute, "descending": descending, "entityname": entityname}
-        ]
+        order = {"attribute": attribute, "descending": str(descending)}
+        if entityname:
+            order["entityname"] = entityname
+
+        self.orders = [order]
         return self
 
-    def _build_attributes_xml(self, indent: int = 2):
+    def build_attributes_xml(self, indent: int = 2):
         """Build XML for attributes"""
         spaces = " " * indent
-        xml = [f'{spaces}<attribute name="{attr}" />' for attr in self.attributes]
+        xml = [f'{spaces}<attribute name="{attr.name}" />' for attr in self.attributes]
         return "\n".join(xml)
 
-    def _build_filters_xml(self, indent: int = 2):
+    def build_filters_xml(self, indent: int = 2):
         """Build XML for filters"""
-        xml = []
-        for filter_data in self.filters:
-            xml.append(self._build_filter_xml(filter_data, indent))
+        xml: list[str] = []
+        for filter in self.filters:
+            xml.append(self._build_filter_xml(filter, indent))
         return "\n".join(xml)
 
-    def _build_filter_xml(self, filter_data, indent=2):
+    def _build_filter_xml(self, filter: Filter, indent: int = 2) -> str:
         """Build XML for a single filter"""
         spaces = " " * indent
-        xml = [f'{spaces}<filter type="{filter_data["type"]}">']
+        xml = [f'{spaces}<filter type="{filter.type}">']
 
-        for condition in filter_data["conditions"]:
-            condition_xml = [
-                f'{spaces}  <condition attribute="{condition["attribute"]}"'
-            ]
+        for condition in filter.conditions:
+            print(type(condition))
+            condition_xml = [f'{spaces}  <condition attribute="{condition.attribute}"']
 
-            if "operator" in condition:
-                condition_xml.append(f' operator="{condition["operator"]}"')
-            if "value" in condition:
-                condition_xml.append(f' value="{condition["value"]}"')
+            if condition.operator:
+                condition_xml.append(f' operator="{condition.operator}"')
+            if condition.value:
+                condition_xml.append(f' value="{condition.value}"')
 
             condition_xml.append(" />")
             xml.append("".join(condition_xml))
@@ -90,12 +114,12 @@ class Entity:
         xml.append(f"{spaces}</filter>")
         return "\n".join(xml)
 
-    def _build_orders_xml(self, indent=2):
+    def build_orders_xml(self, indent: int = 2):
         """Build XML for order attributes"""
         if not self.orders:
             return ""
         spaces = " " * indent
-        xml_lines = []
+        xml_lines: list[str] = []
         for order in self.orders:
             xml_line = f'{spaces}<order attribute="{order["attribute"]}"'
             if order.get("entityname"):
@@ -108,8 +132,18 @@ class Entity:
 class LinkedEntity(Entity):
     """Represents a linked entity in FetchXML"""
 
+    from_attribute: Attribute
+    to_attribute: Attribute
+    link_type: Literal["inner", "outer"]
+    alias: str | None
+
     def __init__(
-        self, name, from_attribute, to_attribute, link_type="inner", alias: str | None = None
+        self,
+        name: EntityNames,
+        from_attribute: Attribute,
+        to_attribute: Attribute,
+        link_type: Literal["inner", "outer"] = "inner",
+        alias: str | None = None,
     ):
         super().__init__(name)
         self.from_attribute = from_attribute
@@ -121,10 +155,10 @@ class LinkedEntity(Entity):
         """Build XML for this linked entity"""
         spaces = " " * indent
         xml = [
-            f'{spaces}<link-entity name="{self.name}" '
-            f'from="{self.from_attribute}" '
-            f'to="{self.to_attribute}" '
-            f'link-type="{self.link_type}"'
+            f'{spaces}<link-entity name="{self.name}" ',
+            f'from="{self.from_attribute.name}" ',
+            f'to="{self.to_attribute.name}" ',
+            f'link-type="{self.link_type}"',
         ]
 
         if self.alias:
@@ -133,11 +167,11 @@ class LinkedEntity(Entity):
 
         # Add attributes
         if self.attributes:
-            xml.append(self._build_attributes_xml(indent + 2))
+            xml.append(self.build_attributes_xml(indent + 2))
 
         # Add filters
         if self.filters:
-            xml.append(self._build_filters_xml(indent + 2))
+            xml.append(self.build_filters_xml(indent + 2))
 
         # Add nested links
         for link in self.links:
@@ -145,7 +179,7 @@ class LinkedEntity(Entity):
 
         # Add orders
         if self.orders:
-            xml.append(self._build_orders_xml(indent + 2))
+            xml.append(self.build_orders_xml(indent + 2))
 
         xml.append(f"{spaces}</link-entity>")
         return "\n".join(xml)
@@ -154,12 +188,17 @@ class LinkedEntity(Entity):
 class FetchXML:
     """Factory class for creating FetchXML components"""
 
-    def __init__(self, count: int | None = None, page: int | None = None, returntotalrecordcount=False):
-        self._entity = None
-        self._count = count
-        self._page = page
-        self._return_total_record_count = returntotalrecordcount
-        self._xml = None
+    def __init__(
+        self,
+        count: int | None = None,
+        page: int | None = None,
+        returntotalrecordcount: bool = False,
+    ):
+        self._entity: Entity | None = None
+        self._count: int | None = count
+        self._page: int | None = page
+        self._return_total_record_count: bool = returntotalrecordcount
+        self._xml: str | None = None
 
     @classmethod
     def fetch(
@@ -172,16 +211,16 @@ class FetchXML:
         return cls(count, page, returntotalrecordcount)
 
     @classmethod
-    def entity(cls, name: str):
+    def entity(cls, name: EntityNames):
         """Create a new entity"""
         return Entity(name)
 
     @classmethod
     def link(
         cls,
-        name: str,
-        from_attribute: str,
-        to_attribute: str,
+        name: EntityNames,
+        from_attribute: Attribute,
+        to_attribute: Attribute,
         link_type: Literal["inner", "outer"] = "inner",
         alias: str | None = None,
     ):
@@ -214,11 +253,11 @@ class FetchXML:
 
         # Add attributes
         if self._entity.attributes:
-            xml.append(self._entity._build_attributes_xml(4))
+            xml.append(self._entity.build_attributes_xml(4))
 
         # Add filters
         if self._entity.filters:
-            xml.append(self._entity._build_filters_xml(4))
+            xml.append(self._entity.build_filters_xml(4))
 
         # Add links
         for link in self._entity.links:
@@ -226,7 +265,7 @@ class FetchXML:
 
         # Add orders
         if self._entity.orders:
-            xml.append(self._entity._build_orders_xml(4))
+            xml.append(self._entity.build_orders_xml(4))
 
         xml.extend(["  </entity>", "</fetch>"])
         self._xml = "\n".join(xml)
@@ -246,7 +285,7 @@ class FetchXML:
         return self._entity.name
 
     @staticmethod
-    def parse_response(response_data: dict[str, object]):
+    def parse_response(response_data: dict[str, Any]):
         """Parse the response from Dynamics CRM"""
         if not response_data:
             logger.debug("No response data received")
