@@ -98,6 +98,8 @@ class CrmApi:
 
             response_json: dict[str, object] = response.json()
 
+            # print(response_json)
+
             return FetchXML.parse_response(response_json)
         except RequestError as e:
             error_msg = f"API request failed: {e}"

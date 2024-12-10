@@ -25,15 +25,13 @@ async def main() -> None:
         authenticator=authenticator,
     )
 
-    fetch = FetchXML.fetch(count=10, page=1, returntotalrecordcount=True)
+    fetch = FetchXML.fetch()
 
     entity = (
         FetchXML.entity("incident")
         .set_attributes(
             Attribute("ticketnumber"),
             Attribute("title"),
-            Attribute("createdon"),
-            Attribute("ownerid"),
         )
         .set_filters(
             FilterCondition("ownerid", "eq-userid"),
@@ -50,12 +48,15 @@ async def main() -> None:
             link_type="inner",
             alias="contact",
         )
-        .set_order("fullname", descending=False)
+        .set_order("contactid", descending=False)
+        .set_filters(
+            FilterCondition("contactid", "neq", "7fb8568e-82d1-ee11-9079-6045bd895c47"),
+            FilterCondition("createdon", "on-or-after", "2023-10-01"),
+            type="and",
+        )
         .set_attributes(
-            Attribute("coop_external_customer_id"),
             Attribute("contactid"),
             Attribute("fullname"),
-            Attribute("emailaddress1"),
         )
     )
 
@@ -64,7 +65,6 @@ async def main() -> None:
         from_attribute=Attribute("customerid"),
         to_attribute=Attribute("contactid"),
         link_type="inner",
-        alias="related_incidents",
     ).set_attributes(
         Attribute("ticketnumber"),
         Attribute("title"),
@@ -77,9 +77,7 @@ async def main() -> None:
 
     _ = fetch.build()
 
-    # result = await api.fetch_xml_request(fetch)
-
-    # print(result)
+    print(fetch._xml)
 
     while True:
         y_n = input("Do you want to continue? (y/n): ")
@@ -88,9 +86,10 @@ async def main() -> None:
 
         start = time.time()
         result = await api.fetch_xml_request(fetch)
+        print(len(result["value"]))
         end = time.time()
 
         print(f"Total time for request: {end - start}")
 
-        dump = json.dumps(result, indent=4)
+        dump = json.dumps(result, indent=4, ensure_ascii=False)
         print(dump)

@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 import logging
 from typing import Any, Literal
+import json
 
 
 # Configure logging
@@ -151,7 +152,7 @@ class LinkedEntity(Entity):
         self.link_type = link_type
         self.alias = alias
 
-    def build_xml(self, indent=2):
+    def build_xml(self, indent: int = 2):
         """Build XML for this linked entity"""
         spaces = " " * indent
         xml = [
@@ -290,6 +291,10 @@ class FetchXML:
         if not response_data:
             logger.debug("No response data received")
             return None
+
+        # print("RAW DATA")
+        # raw = json.dumps(response_data, indent=4)
+        # print(raw)
 
         # Initialize result with metadata
         metakeys = [f for f in response_data if f.startswith("@")]
