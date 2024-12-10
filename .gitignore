@@ -12,4 +12,4 @@ wheels/
 .env
 app/data
 
-*.DS_Store
+.DS_Store
