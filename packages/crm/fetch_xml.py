@@ -231,7 +231,7 @@ class FetchXML:
     def set_entity(self, entity: Entity):
         """Set the main entity for the query"""
         self._entity = entity
-        return self
+        return entity
 
     def build(self):
         """Build and return the complete FetchXML query"""
@@ -270,7 +270,7 @@ class FetchXML:
 
         xml.extend(["  </entity>", "</fetch>"])
         self._xml = "\n".join(xml)
-        return self
+        # return self
 
     def get_query(self):
         """Get the built XML query string"""
@@ -292,9 +292,9 @@ class FetchXML:
             logger.debug("No response data received")
             return None
 
-        # print("RAW DATA")
-        # raw = json.dumps(response_data, indent=4)
-        # print(raw)
+        print("RAW DATA")
+        raw = json.dumps(response_data, indent=4)
+        print(raw)
 
         # Initialize result with metadata
         metakeys = [f for f in response_data if f.startswith("@")]

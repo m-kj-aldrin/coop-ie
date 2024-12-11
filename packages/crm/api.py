@@ -29,7 +29,7 @@ class CrmApi:
     async def request(
         self,
         url: str,
-        method: Literal["GET", "POST", "PUT", "DELETE"] = "GET",
+        method: Literal["GET", "POST", "PUT", "DELETE","PATCH"] = "GET",
         parameters: list[tuple[str, Any]] = [],
         headers: dict[str, str] | Headers = {},
         data: None | dict[str, Any] = None,
@@ -77,6 +77,7 @@ class CrmApi:
         xml_query = query.get_query()
 
         url = f"{self.base_url}/{self.api_data_endpoint}/{entity_name}"
+        print(f"url: {url}")
 
         headers = Headers(
             {

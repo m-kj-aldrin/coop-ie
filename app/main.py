@@ -2,6 +2,7 @@ import json
 import logging
 import time
 from app.config import Config
+from packages.crm.actions import close_incident
 from packages.crm.api import CrmApi
 from packages.crm.auth import Authenticate
 from packages.crm.fetch_xml import Attribute, FetchXML, FilterCondition
@@ -25,9 +26,8 @@ async def main() -> None:
         authenticator=authenticator,
     )
 
-    fetch = FetchXML.fetch()
-
-    entity = (
+    fetch = FetchXML.fetch(count=1)
+    _ = fetch.set_entity(
         FetchXML.entity("incident")
         .set_attributes(
             Attribute("ticketnumber"),
@@ -38,58 +38,69 @@ async def main() -> None:
             FilterCondition("statecode", "eq", "0"),
             type="and",
         )
+        .set_order("createdon", descending=False)
+    ).set_links(
+        [
+            FetchXML.link(
+                name="contact",
+                from_attribute=Attribute("contactid"),
+                to_attribute=Attribute("customerid"),
+                link_type="inner",
+                alias="contact",
+            )
+            .set_filters(
+                FilterCondition(
+                    "contactid", "neq", "7fb8568e-82d1-ee11-9079-6045bd895c47"
+                ),
+                # FilterCondition("emailaddress1", "eq", "production@coop-mach1.com"),
+                type="and",
+            )
+            .set_attributes(
+                Attribute("contactid"),
+                Attribute("fullname"),
+                Attribute("emailaddress1"),
+            )
+            # .set_links(
+            #     [
+            #         FetchXML.link(
+            #             name="incident",
+            #             from_attribute=Attribute("customerid"),
+            #             to_attribute=Attribute("contactid"),
+            #             link_type="inner",
+            #         )
+            #         .set_attributes(
+            #             Attribute("ticketnumber"),
+            #             Attribute("title"),
+            #             Attribute("createdon"),
+            #         )
+            #         .set_filters(
+            #             FilterCondition("createdon", "on-or-after", "2023-10-01"),
+            #             type="and",
+            #         )
+            #         .set_order("createdon", descending=True)
+            #     ]
+            # )
+        ]
     )
 
-    contact_link = (
-        FetchXML.link(
-            name="contact",
-            from_attribute=Attribute("contactid"),
-            to_attribute=Attribute("customerid"),
-            link_type="inner",
-            alias="contact",
-        )
-        .set_order("contactid", descending=False)
-        .set_filters(
-            FilterCondition("contactid", "neq", "7fb8568e-82d1-ee11-9079-6045bd895c47"),
-            FilterCondition("createdon", "on-or-after", "2023-10-01"),
-            type="and",
-        )
-        .set_attributes(
-            Attribute("contactid"),
-            Attribute("fullname"),
-        )
-    )
+    # fetch.build()
+    # result = await api.fetch_xml_request(fetch)
 
-    related_incidents_link = FetchXML.link(
-        name="incident",
-        from_attribute=Attribute("customerid"),
-        to_attribute=Attribute("contactid"),
-        link_type="inner",
-    ).set_attributes(
-        Attribute("ticketnumber"),
-        Attribute("title"),
-        Attribute("createdon"),
-    )
+    # print(fetch._xml)
 
-    _ = contact_link.set_links([related_incidents_link])
-    _ = entity.set_links([contact_link])
-    _ = fetch.set_entity(entity)
+    await close_incident(incident_id="5da9bbeb-29e1-ee11-904c-000d3a4b682f", api=api)
 
-    _ = fetch.build()
+    # while True:
+    #     y_n = input("Do you want to continue? (y/n): ")
+    #     if y_n.lower() == "n":
+    #         break
 
-    print(fetch._xml)
+    #     start = time.time()
+    #     result = await api.fetch_xml_request(fetch)
+    #     print(f"Received {len(result['value'])} incidents")
+    #     end = time.time()
 
-    while True:
-        y_n = input("Do you want to continue? (y/n): ")
-        if y_n.lower() == "n":
-            break
+    #     print(f"Total time for request: {end - start}")
 
-        start = time.time()
-        result = await api.fetch_xml_request(fetch)
-        print(len(result["value"]))
-        end = time.time()
-
-        print(f"Total time for request: {end - start}")
-
-        dump = json.dumps(result, indent=4, ensure_ascii=False)
-        print(dump)
+    #     # dump = json.dumps(result, indent=4, ensure_ascii=False)
+    #     # print(dump)
