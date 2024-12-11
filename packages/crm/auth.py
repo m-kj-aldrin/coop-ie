@@ -1,6 +1,14 @@
 import os
 import time
+import logging
 from packages.crm.protocols import User, Cookie
+
+# Configure logging
+logging.basicConfig(
+    level=logging.DEBUG,
+    format='%(asctime)s - %(levelname)s - %(message)s'
+)
+logger = logging.getLogger(__name__)
 
 # from playwright.sync_api import sync_playwright, TimeoutError
 from playwright.async_api import async_playwright, TimeoutError
@@ -20,19 +28,24 @@ class Authenticate:
         self.load_cookies()
 
     async def login(self, user: User | None = None):
-
+        logger.debug("Starting login process")
+        
         if self.is_authenticated:
+            logger.info("User already authenticated")
             return self
 
         _user = user or self._user
         if _user is None:
+            logger.error("No user provided for authentication")
             raise ValueError("User must be provided")
 
         self._user = _user
+        logger.debug(f"Attempting login for user: {_user.username}")
 
         async with async_playwright() as playwright:
-
             try:
+                logger.debug("Launching browser")
+                
                 browser = await playwright.chromium.launch(
                     headless=True,
                     channel="chrome",
@@ -43,30 +56,46 @@ class Authenticate:
                     ],
                 )
             except TimeoutError:
+                logger.error("Browser launch timed out")
+                return self
+            except Exception as e:
+                logger.error(f"Failed to launch browser: {str(e)}")
                 return self
 
+            logger.debug("Creating new browser context")
             context = await browser.new_context()
             page = await context.new_page()
+            
+            # Debug user agent
+            actual_user_agent = await page.evaluate("() => navigator.userAgent")
+            logger.info(f"Current User Agent: {actual_user_agent}")
 
             try:
+                logger.debug(f"Navigating to login URL: {self._login_url}")
                 _ = await page.goto(
                     self._login_url, timeout=60000
-                )  # 60 seconds timeout
+                )
 
+                logger.debug("Waiting for username input")
                 _ = await page.wait_for_selector(
                     "input[name='loginfmt']", timeout=20000
                 )
                 _ = await page.fill("input[name='loginfmt']", _user.username)
                 _ = await page.press("input[name='loginfmt']", "Enter")
+                logger.debug("Username entered successfully")
 
+                logger.debug("Waiting for password input")
                 _ = await page.wait_for_selector("input[name='passwd']", timeout=20000)
                 _ = await page.fill("input[name='passwd']", _user.password)
                 _ = await page.click("input[type='submit']")
+                logger.debug("Password entered successfully")
 
+                logger.debug("Waiting for phone authentication")
                 phone_auth_selector = "[data-value='PhoneAppNotification']"
                 _ = await page.wait_for_selector(phone_auth_selector, timeout=60000)
                 _ = await page.click(phone_auth_selector)
 
+                logger.debug("Waiting for authentication number")
                 auth_number_selector = ".display-sign-container"
                 _ = await page.wait_for_selector(auth_number_selector, timeout=60000)
                 auth_number_element = await page.text_content(
@@ -74,24 +103,29 @@ class Authenticate:
                 )
 
                 if not auth_number_element:
+                    logger.error("Failed to get authentication number")
                     return self
 
                 auth_number = auth_number_element.replace(" ", "").replace("\n", "")
+                logger.info(f"Authentication number received: {auth_number}")
 
                 print("\n" + "=" * 50)
                 print(f"AUTHENTICATION NUMBER: {auth_number}")
                 print("Please enter this number in your phone app")
                 print("=" * 50 + "\n")
 
+                logger.debug("Waiting for stay signed in option")
                 stay_signed_in_selector = "input[type='submit']"
                 _ = await page.wait_for_selector(stay_signed_in_selector, timeout=60000)
                 await page.click(stay_signed_in_selector)
 
+                logger.debug("Waiting for redirect to main page")
                 await page.wait_for_url(
                     "https://coopcrmprod.crm4.dynamics.com/main.aspx?forceUCI=1&pagetype=apps",
                     timeout=60000,
                 )
 
+                logger.debug("Getting cookies")
                 cookies_to_grab = [
                     "orgId",
                     "ReqClientId",
@@ -117,12 +151,22 @@ class Authenticate:
                 }
 
                 if not self.cookies:
+                    logger.error("No cookies were captured after authentication")
                     return self
+                    
+                logger.info("Authentication completed successfully")
+                logger.debug(f"Captured {len(self._cookies)} cookies")
 
-                self.save_cookies()
+            except TimeoutError as e:
+                logger.error(f"Timeout during authentication process: {str(e)}")
                 return self
-
-            except TimeoutError:
+            except Exception as e:
+                logger.error(f"Unexpected error during authentication: {str(e)}")
+                return self
+            finally:
+                logger.debug("Closing browser")
+                await browser.close()
+                self.save_cookies()
                 return self
 
     def logout(self):

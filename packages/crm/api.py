@@ -29,12 +29,11 @@ class CrmApi:
     async def request(
         self,
         url: str,
-        method: Literal["GET", "POST", "PUT", "DELETE","PATCH"] = "GET",
+        method: Literal["GET", "POST", "PUT", "DELETE", "PATCH"] = "GET",
         parameters: list[tuple[str, Any]] = [],
         headers: dict[str, str] | Headers = {},
         data: None | dict[str, Any] = None,
     ):
-
         start = time.time()
 
         if not self.authenticator:
@@ -53,7 +52,7 @@ class CrmApi:
         logger.debug(f"Auth validation took {end - start} seconds")
 
         return await self._client.request(
-            method=method, url=url, params=parameters, data=data, headers=headers
+            method=method, url=url, params=parameters, json=data, headers=headers
         )
 
     async def get(self, endpoint: str, parameters: list[tuple[str, Any]]):

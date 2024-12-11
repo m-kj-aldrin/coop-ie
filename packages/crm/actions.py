@@ -1,8 +1,11 @@
-import datetime
 import json
+import logging
 from httpx import Headers
 
 from packages.crm.api import CrmApi
+from packages.utils.date import coop_date_today
+
+logger = logging.getLogger(__name__)
 
 
 async def close_incident(incident_id: str, api: CrmApi):
@@ -22,17 +25,17 @@ async def close_incident(incident_id: str, api: CrmApi):
     )
 
     patch_data = {
-        "coop_resolvedon": datetime.datetime.now()
-        .astimezone(datetime.timezone.utc)
-        .isoformat(timespec="milliseconds")
-        .replace("+00:00", "Z")
+        "coop_resolvedon": coop_date_today(),
+        "coop_closecasenotification": False,
     }
+
+    logger.debug(f"Patch data: {patch_data}")
 
     # First request: Update the incident
     patch_res = await api.request(
         url=incident_url,
         method="PATCH",
-        data=json.dumps(patch_data),
+        data=patch_data,
         headers=headers,
     )
 
@@ -45,9 +48,7 @@ async def close_incident(incident_id: str, api: CrmApi):
     action_url = f"{api.base_url}/{api.api_data_endpoint}/CloseIncident"
 
     close_data = {
-        "IncidentResolution": {
-            "incidentid@odata.bind": f"/incidents({incident_id})"
-        },
+        "IncidentResolution": {"incidentid@odata.bind": f"/incidents({incident_id})"},
         "Status": -1,
     }
 
