@@ -16,7 +16,7 @@ async def main() -> None:
 
     user = User(username=config.username, password=config.password)
 
-    authenticator = await Authenticate(
+    authenticator = Authenticate(
         login_url=config.base_url, redirect_url=config.base_url
     ).login(user=user)
 

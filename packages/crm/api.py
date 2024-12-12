@@ -51,11 +51,20 @@ class CrmApi:
         if not self.authenticator:
             raise ValueError("Authenticator not set")
 
-        if not self.authenticator.is_authenticated:
-            _ = await self.authenticator.login()
-            # if not (await self.authenticator.login()).is_authenticated:
-            #     raise ValueError("Authentication failed")
-            self._client.cookies = self.authenticator.cookies_as_tuples()
+        try:
+            self._client.cookies = self.authenticator.login().cookies_as_tuples()
+        except Exception as e:
+            logger.error(f"Failed to login: {e}")
+
+        # self.authenticator.login().cookies_as_tuples
+
+        # if not self.authenticator.is_authenticated:
+        # self.authenticator.login()
+        # if not self.authenticator.is_authenticated:
+        #     _ = await self.authenticator.login()
+        #     # if not (await self.authenticator.login()).is_authenticated:
+        #     #     raise ValueError("Authentication failed")
+        #     self._client.cookies = self.authenticator.cookies_as_tuples()
 
         # print(f"Requesting {method} {url} with parameters {parameters}")
 
