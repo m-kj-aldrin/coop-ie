@@ -26,7 +26,7 @@ class Attribute:
     name: str
 
 
-EntityNames = Literal["incident", "contact"]
+EntityNames = Literal["incident", "contact", "coop_notification"]
 
 
 class Entity:
@@ -34,7 +34,7 @@ class Entity:
 
     attributes: tuple[Attribute, ...]
     filters: list[Filter]
-    links: list["LinkedEntity"]
+    links: tuple["LinkedEntity", ...]
     orders: list[dict[str, str]]
     name: EntityNames
 
@@ -60,7 +60,7 @@ class Entity:
         self.filters = [filter]
         return self
 
-    def set_links(self, links: list["LinkedEntity"]):
+    def set_links(self, *links: "LinkedEntity"):
         """Set linked entities"""
         self.links = links
         return self
@@ -292,9 +292,9 @@ class FetchXML:
             logger.debug("No response data received")
             return None
 
-        print("RAW DATA")
-        raw = json.dumps(response_data, indent=4)
-        print(raw)
+        # print("RAW DATA")
+        # raw = json.dumps(response_data, indent=4)
+        # print(raw)
 
         # Initialize result with metadata
         metakeys = [f for f in response_data if f.startswith("@")]

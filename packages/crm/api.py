@@ -37,7 +37,12 @@ class CrmApi:
         self.api_data_endpoint = api_data_endpoint
         self.authenticator = authenticator
 
-        self._client = AsyncClient(cookies=self.authenticator.cookies_as_tuples())
+        self._client = AsyncClient(
+            cookies=self.authenticator.cookies_as_tuples(),
+            headers={
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
+            },
+        )
 
     async def request(
         self,
@@ -68,7 +73,12 @@ class CrmApi:
             method=method, url=url, params=parameters, json=data, headers=headers
         )
 
-    async def get(self, endpoint: str, parameters: list[tuple[str, Any]]):
+    async def get(
+        self,
+        endpoint: str,
+        parameters: list[tuple[str, Any]],
+        headers: MutableMapping[str, str] | Headers | None = None,
+    ):
         url = f"{self.base_url}/{self.api_data_endpoint}/{endpoint}"
 
         return await self.request(method="GET", url=url, parameters=parameters)

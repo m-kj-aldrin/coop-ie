@@ -32,7 +32,9 @@ class ActionMap:
         )
 
 
-async def update_incident(incident_id: str, patch_data: MutableMapping[str, Any], api: CrmApi):
+async def update_incident(
+    incident_id: str, patch_data: MutableMapping[str, Any], api: CrmApi
+):
     """Update an incident"""
 
     incident_str = f"incidents({incident_id})"
@@ -75,3 +77,23 @@ async def close_incident(incident_id: str, api: CrmApi):
     )
 
     return close_res
+
+
+async def close_notification(notificiation_id: str, api: CrmApi):
+    """Close an incident"""
+
+    notificiation_str = f"coop_notifications({notificiation_id})"
+
+    headers = Headers(headers=o_data_headers)
+
+    patch_data = {
+        "coop_isread": "true",
+    }
+
+    close_not = await api.patch(
+        endpoint=notificiation_str,
+        data=patch_data,
+        headers=headers,
+    )
+
+    return close_not

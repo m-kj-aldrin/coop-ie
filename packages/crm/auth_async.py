@@ -6,10 +6,6 @@ import logging
 from packages.crm.protocols import User, Cookie
 
 # Configure logging
-logging.basicConfig(
-    level=logging.DEBUG,
-    format='%(asctime)s - %(levelname)s - %(message)s'
-)
 logger = logging.getLogger(__name__)
 
 # from playwright.sync_api import sync_playwright, TimeoutError
