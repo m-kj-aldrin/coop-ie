@@ -91,7 +91,9 @@ async def main() -> None:
 
     # # print(fetch._xml)
 
-    await close_incident(incident_id="0b29a215-f8b7-ef11-b8e8-7c1e527527f9", api=api)
+    _ = await close_incident(
+        incident_id="0b29a215-f8b7-ef11-b8e8-7c1e527527f9", api=api
+    )
 
     # while True:
     #     y_n = input("Do you want to continue? (y/n): ")

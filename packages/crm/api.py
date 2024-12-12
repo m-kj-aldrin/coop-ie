@@ -42,35 +42,26 @@ class CrmApi:
         self,
         url: str,
         method: Literal["GET", "POST", "PUT", "DELETE", "PATCH"] = "GET",
-        parameters: list[tuple[str, Any]] = [],
-        headers: dict[str, str] | Headers = {},
-        data: None | dict[str, Any] = None,
+        parameters: list[tuple[str, Any]] | None = None,
+        headers: dict[str, str] | Headers | None = None,
+        data: dict[str, Any] | None = None,
     ):
-        start = time.time()
 
         if not self.authenticator:
             raise ValueError("Authenticator not set")
 
         try:
-            self._client.cookies = self.authenticator.login().cookies_as_tuples()
+            self._client.cookies = (
+                await self.authenticator.login()
+            ).cookies_as_tuples()
+
         except Exception as e:
             logger.error(f"Failed to login: {e}")
 
-        # self.authenticator.login().cookies_as_tuples
-
-        # if not self.authenticator.is_authenticated:
-        # self.authenticator.login()
-        # if not self.authenticator.is_authenticated:
-        #     _ = await self.authenticator.login()
-        #     # if not (await self.authenticator.login()).is_authenticated:
-        #     #     raise ValueError("Authentication failed")
-        #     self._client.cookies = self.authenticator.cookies_as_tuples()
-
-        # print(f"Requesting {method} {url} with parameters {parameters}")
-
-        end = time.time()
-
-        logger.debug(f"Auth validation took {end - start} seconds")
+        if parameters is None:
+            parameters = []
+        if headers is None:
+            headers = {}
 
         return await self._client.request(
             method=method, url=url, params=parameters, json=data, headers=headers
@@ -80,6 +71,42 @@ class CrmApi:
         url = f"{self.base_url}/{self.api_data_endpoint}/{endpoint}"
 
         return await self.request(method="GET", url=url, parameters=parameters)
+
+    async def patch(
+        self,
+        endpoint: str,
+        data: dict[str, Any],
+        headers: dict[str, str] | Headers | None = None,
+    ):
+        url = f"{self.base_url}/{self.api_data_endpoint}/{endpoint}"
+
+        response = await self.request(
+            method="PATCH", url=url, data=data, headers=headers
+        )
+
+        if response.status_code not in (200, 201, 204):
+            raise Exception(
+                f"Patch request failed: {response.status_code} {response.text}"
+            )
+
+        return response
+
+    async def post(
+        self,
+        endpoint: str,
+        data: dict[str, Any],
+        headers: dict[str, str] | Headers | None = None,
+    ):
+        url = f"{self.base_url}/{self.api_data_endpoint}/{endpoint}"
+
+        respone = await self.request(method="POST", url=url, data=data, headers=headers)
+
+        if respone.status_code not in (200, 201, 204):
+            raise Exception(
+                f"Post request failed: {respone.status_code} {respone.text}"
+            )
+
+        return respone
 
     async def fetch_xml_request(self, query: FetchXML):
         """Make a FetchXML request to the CRM API
