@@ -2,7 +2,9 @@ import logging
 from app.config import Config
 from packages.crm.actions import close_incident
 from packages.crm.api import CrmApi
-from packages.crm.auth import Authenticate
+
+# from packages.crm.auth import Authenticate
+from packages.crm.auth_async import Authenticate
 from packages.crm.fetch_xml import Attribute, FetchXML, FilterCondition
 from packages.crm.protocols import User
 
@@ -17,7 +19,7 @@ async def main() -> None:
 
     user = User(username=config.username, password=config.password)
 
-    authenticator = Authenticate(
+    authenticator = await Authenticate(
         login_url=config.base_url, redirect_url=config.base_url
     ).login(user=user)
 
