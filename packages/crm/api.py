@@ -1,6 +1,6 @@
 import logging
 import time
-from typing import Any, Literal
+from typing import Any, Literal, MutableMapping, MutableSequence
 from packages.crm.fetch_xml import FetchXML
 from packages.crm.protocols import AuthenticateProtocol
 from httpx import AsyncClient, RequestError, Headers
@@ -15,7 +15,8 @@ o_data_headers = Headers(
     {
         "OData-MaxVersion": "4.0",
         "OData-Version": "4.0",
-        "Prefer": "odata.include-annotations=*",
+        # "Prefer": "odata.include-annotations=*",
+        "Prefer": "odata.include-annotations=OData.Community.Display.V1.FormattedValue",
     }
 )
 
@@ -43,8 +44,8 @@ class CrmApi:
         url: str,
         method: Literal["GET", "POST", "PUT", "DELETE", "PATCH"] = "GET",
         parameters: list[tuple[str, Any]] | None = None,
-        headers: dict[str, str] | Headers | None = None,
-        data: dict[str, Any] | None = None,
+        headers: MutableMapping[str, str] | Headers | None = None,
+        data: MutableMapping[str, Any] | None = None,
     ):
 
         if not self.authenticator:
@@ -75,13 +76,19 @@ class CrmApi:
     async def patch(
         self,
         endpoint: str,
-        data: dict[str, Any],
-        headers: dict[str, str] | Headers | None = None,
+        data: MutableMapping[str, Any],
+        headers: MutableMapping[str, str] | Headers | None = None,
     ):
         url = f"{self.base_url}/{self.api_data_endpoint}/{endpoint}"
 
+        if headers is None:
+            headers = {}
+
         response = await self.request(
-            method="PATCH", url=url, data=data, headers=headers
+            method="PATCH",
+            url=url,
+            data=data,
+            headers={**headers, "mscrm.suppressduplicatedetection": "false"},
         )
 
         if response.status_code not in (200, 201, 204):

@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 import logging
 from httpx import Headers
-from typing import Any
+from typing import Any, MutableMapping
 
 from packages.crm.api import CrmApi
 from packages.utils.date import coop_date_today
@@ -30,6 +30,22 @@ class ActionMap:
                 "Status": -1,
             },
         )
+
+
+async def update_incident(incident_id: str, patch_data: MutableMapping[str, Any], api: CrmApi):
+    """Update an incident"""
+
+    incident_str = f"incidents({incident_id})"
+
+    headers = Headers(headers=o_data_headers)
+
+    patch_response = await api.patch(
+        endpoint=incident_str,
+        data=patch_data,
+        headers=headers,
+    )
+
+    return patch_response
 
 
 async def close_incident(incident_id: str, api: CrmApi):

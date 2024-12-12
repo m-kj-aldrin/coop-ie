@@ -1,6 +1,6 @@
 import logging
 from app.config import Config
-from packages.crm.actions import close_incident
+from packages.crm.actions import close_incident, update_incident
 from packages.crm.api import CrmApi
 
 # from packages.crm.auth import Authenticate
@@ -91,9 +91,19 @@ async def main() -> None:
 
     # # print(fetch._xml)
 
-    _ = await close_incident(
-        incident_id="0b29a215-f8b7-ef11-b8e8-7c1e527527f9", api=api
+    karl_jan_test3_incident_id = "0b29a215-f8b7-ef11-b8e8-7c1e527527f9"
+
+    desc = "BLABLABLA"
+
+    _ = await update_incident(
+        incident_id=karl_jan_test3_incident_id,
+        patch_data={
+            "description": f'<div class="ck-content" data-wrapper="true" dir="ltr" style="--ck-image-style-spacing: 1.5em; --ck-inline-image-style-spacing: calc(var(--ck-image-style-spacing) / 2); --ck-color-selector-caption-background: hsl(0, 0%, 97%); --ck-color-selector-caption-text: hsl(0, 0%, 20%); font-family: Segoe UI; font-size: 11pt;"><p style="margin: 0;">{desc}</div>'
+        },
+        api=api,
     )
+
+    # _ = await close_incident(incident_id=karl_jan_test3_incident_id, api=api)
 
     # while True:
     #     y_n = input("Do you want to continue? (y/n): ")
