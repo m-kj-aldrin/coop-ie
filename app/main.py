@@ -1,6 +1,4 @@
-import json
 import logging
-import time
 from app.config import Config
 from packages.crm.actions import close_incident
 from packages.crm.api import CrmApi
@@ -8,7 +6,10 @@ from packages.crm.auth import Authenticate
 from packages.crm.fetch_xml import Attribute, FetchXML, FilterCondition
 from packages.crm.protocols import User
 
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(levelname)s - [%(filename)s:%(lineno)d] - %(message)s",
+)
 
 
 async def main() -> None:

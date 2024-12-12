@@ -1,4 +1,3 @@
-# from playwright.async_api import async_playwright, TimeoutError
 from playwright.sync_api import sync_playwright, TimeoutError
 import json
 import os
@@ -6,13 +5,7 @@ import time
 import logging
 from packages.crm.protocols import User, Cookie
 
-# Configure logging
-logging.basicConfig(
-    level=logging.DEBUG, format="%(asctime)s - %(levelname)s - %(message)s"
-)
 logger = logging.getLogger(__name__)
-
-# from playwright.sync_api import sync_playwright, TimeoutError
 
 
 class Authenticate:
@@ -25,7 +18,7 @@ class Authenticate:
     def __init__(self, login_url: str, redirect_url: str):
         self._login_url = login_url
         self._redirect_url = redirect_url
-        self.load_cookies()
+        _ = self.load_cookies()
 
     def login(self, user: User | None = None):
         logger.debug("Starting login process")
