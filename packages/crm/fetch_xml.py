@@ -1,11 +1,10 @@
 from dataclasses import dataclass
 import logging
 from typing import Any, Literal
-import json
 
 
-# Configure logging
 logger = logging.getLogger(__name__)
+logging.basicConfig(level=logging.INFO)
 
 
 @dataclass
@@ -17,8 +16,8 @@ class FilterCondition:
 
 @dataclass
 class Filter:
-    type: Literal["and", "or"]
-    conditions: tuple[FilterCondition, ...]
+    conditions: list[FilterCondition]
+    filter_type: Literal["and", "or"] = "and"
 
 
 @dataclass
@@ -33,7 +32,7 @@ class Entity:
     """Base class for both main entity and linked entities"""
 
     attributes: tuple[Attribute, ...]
-    filters: list[Filter]
+    filters: tuple[Filter, ...]
     links: tuple["LinkedEntity", ...]
     orders: list[dict[str, str]]
     name: EntityNames
@@ -41,8 +40,8 @@ class Entity:
     def __init__(self, name: EntityNames):
         self.name = name
         self.attributes = ()
-        self.filters = []
-        self.links = []
+        self.filters = ()
+        self.links = ()
         self.orders = []
 
     def set_attributes(self, *attributes: Attribute):
@@ -52,12 +51,13 @@ class Entity:
 
     def set_filters(
         self,
-        *conditions: FilterCondition,
-        type: Literal["and", "or"] = "and",
+        *filters: Filter,
+        # filter_type: Literal["and", "or"] = "and",
     ):
         """Set filter conditions for the entity"""
-        filter = Filter(type=type, conditions=conditions)
-        self.filters = [filter]
+        # filter = Filter(filter_type=filter_type, conditions=conditions)
+        # self.filters = [filter]
+        self.filters = filters
         return self
 
     def set_links(self, *links: "LinkedEntity"):
@@ -98,7 +98,7 @@ class Entity:
     def _build_filter_xml(self, filter: Filter, indent: int = 2) -> str:
         """Build XML for a single filter"""
         spaces = " " * indent
-        xml = [f'{spaces}<filter type="{filter.type}">']
+        xml = [f'{spaces}<filter type="{filter.filter_type}">']
 
         for condition in filter.conditions:
             print(type(condition))

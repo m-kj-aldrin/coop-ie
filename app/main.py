@@ -35,90 +35,27 @@ async def main() -> None:
         authenticator=authenticator,
     )
 
-    # fetch = FetchXML.fetch(count=1)
-    # _ = fetch.set_entity(
-    #     FetchXML.entity("incident")
-    #     .set_attributes(
-    #         Attribute("ticketnumber"),
-    #         Attribute("title"),
-    #     )
-    #     .set_filters(
-    #         FilterCondition("ownerid", "eq-userid"),
-    #         FilterCondition("statecode", "eq", "0"),
-    #         type="and",
-    #     )
-    #     .set_order("createdon", descending=False)
-    # ).set_links(
-    #     [
-    #         FetchXML.link(
-    #             name="contact",
-    #             from_attribute=Attribute("contactid"),
-    #             to_attribute=Attribute("customerid"),
-    #             link_type="inner",
-    #             alias="contact",
-    #         )
-    #         .set_filters(
-    #             FilterCondition(
-    #                 "contactid", "neq", "7fb8568e-82d1-ee11-9079-6045bd895c47"
-    #             ),
-    #             # FilterCondition("emailaddress1", "eq", "production@coop-mach1.com"),
-    #             type="and",
-    #         )
-    #         .set_attributes(
-    #             Attribute("contactid"),
-    #             Attribute("fullname"),
-    #             Attribute("emailaddress1"),
-    #         )
-    #         # .set_links(
-    #         #     [
-    #         #         FetchXML.link(
-    #         #             name="incident",
-    #         #             from_attribute=Attribute("customerid"),
-    #         #             to_attribute=Attribute("contactid"),
-    #         #             link_type="inner",
-    #         #         )
-    #         #         .set_attributes(
-    #         #             Attribute("ticketnumber"),
-    #         #             Attribute("title"),
-    #         #             Attribute("createdon"),
-    #         #         )
-    #         #         .set_filters(
-    #         #             FilterCondition("createdon", "on-or-after", "2023-10-01"),
-    #         #             type="and",
-    #         #         )
-    #         #         .set_order("createdon", descending=True)
-    #         #     ]
-    #         # )
-    #     ]
-    # )
-
-    # # fetch.build()
-    # # result = await api.fetch_xml_request(fetch)
-
-    # # print(fetch._xml)
-
     karl_jan_test3_incident_id = "0b29a215-f8b7-ef11-b8e8-7c1e527527f9"
 
     # response = await get_notifications_for_inactive_incidents(api=api)
     response = await get_notifications_for_inactive_incidents(api=api)
 
     # pprint.pprint(response)
-    tasks = []
+    # tasks = []
     for notificiation in response["value"]:
-        # print(notificiation)
-        id = notificiation['coop_notificationid']
-        # print(id)
-        task = asyncio.create_task(close_notification(id, api=api))
-        tasks.append(task)
+        id = notificiation["coop_notificationid"]
+        print(id)
+        # task = asyncio.create_task(close_notification(id, api=api))
+        # tasks.append(task)
         # task = asyncio.create_task(close_incident(notificiation["incident1"]["incidentid"], api=api))
         # tasks.append(task)
         # pass
 
     # Wait for all tasks to complete
-    responses = await asyncio.gather(*tasks)
+    # responses = await asyncio.gather(*tasks)
 
-    for response in responses:
-        print(response)
+    # for response in responses:
+    #     print(response)
 
     # response = await get_incident(incident_id=karl_jan_test3_incident_id, api=api)
 

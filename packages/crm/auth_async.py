@@ -25,7 +25,7 @@ class Authenticate:
 
     async def login(self, user: User | None = None):
         logger.debug("Starting login process")
-        
+
         if self.is_authenticated:
             logger.info("User already authenticated")
             return self
@@ -41,7 +41,7 @@ class Authenticate:
         async with async_playwright() as playwright:
             try:
                 logger.debug("Launching browser")
-                
+
                 browser = await playwright.chromium.launch(
                     headless=True,
                     channel="chrome",
@@ -59,18 +59,18 @@ class Authenticate:
                 return self
 
             logger.debug("Creating new browser context")
-            context = await browser.new_context()
+            context = await browser.new_context(
+                user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
+            )
             page = await context.new_page()
-            
+
             # Debug user agent
             actual_user_agent = await page.evaluate("() => navigator.userAgent")
             logger.info(f"Current User Agent: {actual_user_agent}")
 
             try:
                 logger.debug(f"Navigating to login URL: {self._login_url}")
-                _ = await page.goto(
-                    self._login_url, timeout=60000
-                )
+                _ = await page.goto(self._login_url, timeout=60000)
 
                 logger.debug("Waiting for username input")
                 _ = await page.wait_for_selector(
@@ -149,7 +149,7 @@ class Authenticate:
                 if not self.cookies:
                     logger.error("No cookies were captured after authentication")
                     return self
-                    
+
                 logger.info("Authentication completed successfully")
                 logger.debug(f"Captured {len(self._cookies)} cookies")
 
