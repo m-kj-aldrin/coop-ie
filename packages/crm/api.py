@@ -8,6 +8,18 @@ from httpx import AsyncClient, RequestError, Headers
 logger = logging.getLogger(__name__)
 
 
+# "Accept": "application/json",
+# "Content-Type": "application/json; charset=utf-8",
+
+o_data_headers = Headers(
+    {
+        "OData-MaxVersion": "4.0",
+        "OData-Version": "4.0",
+        "Prefer": "odata.include-annotations=*",
+    }
+)
+
+
 class CrmApi:
     base_url: str
     api_data_endpoint: str

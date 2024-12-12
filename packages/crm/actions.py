@@ -1,11 +1,35 @@
-import json
+from dataclasses import dataclass
 import logging
 from httpx import Headers
+from typing import Any
 
 from packages.crm.api import CrmApi
 from packages.utils.date import coop_date_today
+from packages.crm.api import o_data_headers
 
 logger = logging.getLogger(__name__)
+
+
+@dataclass
+class Action:
+    name: str
+    data: dict[str, Any]
+
+
+class ActionMap:
+    """Handles formatting of CRM API action strings"""
+
+    @staticmethod
+    def close_incident(incident_id: str) -> Action:
+        return Action(
+            name="CloseIncident",
+            data={
+                "IncidentResolution": {
+                    "incidentid@odata.bind": f"/incidents({incident_id})"
+                },
+                "Status": -1,
+            },
+        )
 
 
 async def close_incident(incident_id: str, api: CrmApi):
@@ -14,15 +38,7 @@ async def close_incident(incident_id: str, api: CrmApi):
     incident_str = f"incidents({incident_id})"
     incident_url = f"{api.base_url}/{api.api_data_endpoint}/{incident_str}"
 
-    headers = Headers(
-        {
-            "Accept": "application/json",
-            "Content-Type": "application/json; charset=utf-8",
-            "OData-MaxVersion": "4.0",
-            "OData-Version": "4.0",
-            "Prefer": "odata.include-annotations=*",
-        }
-    )
+    headers = Headers(headers=o_data_headers)
 
     patch_data = {
         "coop_resolvedon": coop_date_today(),
@@ -31,7 +47,6 @@ async def close_incident(incident_id: str, api: CrmApi):
 
     logger.debug(f"Patch data: {patch_data}")
 
-    # First request: Update the incident
     patch_res = await api.request(
         url=incident_url,
         method="PATCH",
@@ -44,18 +59,16 @@ async def close_incident(incident_id: str, api: CrmApi):
             f"Failed to update incident: {patch_res.status_code} {patch_res.text}"
         )
 
-    # Second request: Close the incident
-    action_url = f"{api.base_url}/{api.api_data_endpoint}/CloseIncident"
+    action = ActionMap.close_incident(incident_id)
 
-    close_data = {
-        "IncidentResolution": {"incidentid@odata.bind": f"/incidents({incident_id})"},
-        "Status": -1,
-    }
+    action_url = f"{api.base_url}/{api.api_data_endpoint}/{action.name}"
+
+    logger.debug(f"Action URL: {action_url}")
 
     close_res = await api.request(
         url=action_url,
         method="POST",
-        data=json.dumps(close_data),
+        data=action.data,
         headers=headers,
     )
 
