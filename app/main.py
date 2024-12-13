@@ -45,26 +45,25 @@ async def main() -> None:
 
     karl_jan_test3_incident_id = "0b29a215-f8b7-ef11-b8e8-7c1e527527f9"
 
-    response = await get_membership_creationfailures(api=api)
+    # response = await get_membership_creationfailures(api=api)
 
-    tasks = []
-    for incident in response["value"]:
-        extracted = extract_key_values(incident["coop_descriptionwithouthtml"])[0]
-        extracted["CAS-nummer"] = incident["ticketnumber"]
-        # output_file = "C:\\Users\\marald\\Bravedo\\SC Coop - SC Coop Medlemsservice - SC Coop Medlemsservice\\Kundtjänst\\Register (Excel)\\Medlemskap MAD 2021 NY.xlsx"
-        output_file = "C:/Users/marald/Bravedo/SC Coop - SC Coop Medlemsservice - SC Coop Medlemsservice/Kundtjänst/Register (Excel)/Medlemskap MAD 2021 NY.xlsx"
-        try:
-            write_to_excel_append(output_file, extracted)
-            # Only close the incident if writing to Excel was successful
-            response = asyncio.create_task(close_incident(incident["incidentid"], api=api))
-            tasks.append(response)
-        except Exception as e:
-            print(f"Failed to write to Excel: {e}. Skipping incident closure.")
+    # tasks = []
+    # for incident in response["value"]:
+    #     extracted = extract_key_values(incident["coop_descriptionwithouthtml"])[0]
+    #     extracted["CAS-nummer"] = incident["ticketnumber"]
+    #     # output_file = "C:\\Users\\marald\\Bravedo\\SC Coop - SC Coop Medlemsservice - SC Coop Medlemsservice\\Kundtjänst\\Register (Excel)\\Medlemskap MAD 2021 NY.xlsx"
+    #     output_file = "C:/Users/marald/Bravedo/SC Coop - SC Coop Medlemsservice - SC Coop Medlemsservice/Kundtjänst/Register (Excel)/Medlemskap MAD 2021 NY.xlsx"
+    #     try:
+    #         write_to_excel_append(output_file, extracted)
+    #         # Only close the incident if writing to Excel was successful
+    #         response = asyncio.create_task(close_incident(incident["incidentid"], api=api))
+    #         tasks.append(response)
+    #     except Exception as e:
+    #         print(f"Failed to write to Excel: {e}. Skipping incident closure.")
 
+    # responses = await asyncio.gather(*tasks)
 
-    responses = await asyncio.gather(*tasks)
-
-    print(responses)
+    # print(responses)
     # print(response)
 
     # response = await active_incidents_for_user(api=api)
@@ -84,22 +83,24 @@ async def main() -> None:
 
     # print(responses)
 
-    # response = await get_notifications_for_inactive_incidents(api=api)
+    response = await get_notifications_for_inactive_incidents(api=api)
 
-    # for notificiation in response["value"]:
-    #     id = notificiation["coop_notificationid"]
-    #     print(id)
-    # task = asyncio.create_task(close_notification(id, api=api))
-    # tasks.append(task)
-    # task = asyncio.create_task(close_incident(notificiation["incident1"]["incidentid"], api=api))
-    # tasks.append(task)
-    # pass
+    tasks = []
+    for notificiation in response["value"]:
+        id = notificiation["coop_notificationid"]
+        print(id)
 
-    # Wait for all tasks to complete
-    # responses = await asyncio.gather(*tasks)
+        task = asyncio.create_task(close_notification(id, api=api))
+        tasks.append(task)
+        task = asyncio.create_task(
+            close_incident(notificiation["incident1"]["incidentid"], api=api)
+        )
+        tasks.append(task)
 
-    # for response in responses:
-    #     print(response)
+    responses = await asyncio.gather(*tasks)
+
+    for response in responses:
+        print(response)
 
     # response = await get_incident(incident_id=karl_jan_test3_incident_id, api=api)
 
