@@ -4,7 +4,6 @@ from typing import Any, Literal
 
 
 logger = logging.getLogger(__name__)
-logging.basicConfig(level=logging.INFO)
 
 
 @dataclass
@@ -234,7 +233,7 @@ class FetchXML:
         return entity
 
     def build(self):
-        """Build and return the complete FetchXML query"""
+        """Build the complete FetchXML query"""
         if not self._entity:
             raise ValueError("Entity must be set before building query")
 

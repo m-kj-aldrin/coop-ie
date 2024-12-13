@@ -1,0 +1,30 @@
+<fetch version="1.0" output-format="xml-platform" mapping="logical" distinct="false"
+    returntotalrecordcount="true" page="1" count="8" no-lock="false">
+    <entity name="incident">
+        <attribute name="entityimage_url" />
+        <attribute name="statecode" />
+        <attribute name="title" />
+        <attribute name="ticketnumber" />
+        <attribute name="createdon" />
+        <attribute name="incidentid" />
+        <attribute name="caseorigincode" />
+        <order attribute="title" descending="false" />
+        <filter type="and">
+            <condition attribute="statecode" operator="eq" value="0" />
+            <condition attribute="ownerid" operator="eq" uiname="Medlemservice_" uitype="team"
+                value="{5032CAE1-6394-E711-80F2-3863BB346B18}" />
+            <condition attribute="createdon" operator="on-or-after" value="2014-08-01" />
+        </filter>
+        <link-entity name="contact" from="contactid" to="customerid" visible="false"
+            link-type="outer" alias="a_cdf05794a0ec49a3b2548ed7aa26cdd5">
+            <attribute name="fullname" />
+            <attribute name="emailaddress3" />
+            <attribute name="emailaddress2" />
+            <attribute name="emailaddress1" />
+        </link-entity>
+        <filter type="and">
+            <condition attribute="title" operator="like"
+                value="%Membership Creation Failure PRODUCTION%" />
+        </filter>
+    </entity>
+</fetch>

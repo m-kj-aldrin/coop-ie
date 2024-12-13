@@ -53,3 +53,53 @@ async def get_notifications_for_inactive_incidents(api: CrmApi):
     response = await api.fetch_xml_request(fetch)
 
     return response
+
+
+async def active_incidents_for_user(api: CrmApi):
+    fetch = FetchXML.fetch()
+    _ = fetch.set_entity(
+        FetchXML.entity("incident")
+        .set_filters(
+            Filter(
+                [
+                    FilterCondition("statecode", "eq", "0"),
+                    FilterCondition("ownerid", "eq-userid"),
+                ]
+            )
+        )
+        .set_attributes(Attribute("incidentid"), Attribute("ticketnumber"))
+        .set_order("createdon", descending=True)
+    )
+
+    fetch.build()
+
+    response = await api.fetch_xml_request(fetch)
+
+    return response
+
+
+async def get_membership_creationfailures(api: CrmApi):
+    title = "Membership Creation Failure PRODUCTION"
+
+    fetch = FetchXML.fetch()
+    _ = fetch.set_entity(
+        FetchXML.entity("incident")
+        .set_filters(
+            Filter(
+                [
+                    FilterCondition("title", "eq", title),
+                    FilterCondition("statecode", "eq", "0"),
+                    FilterCondition("ownerid", "eq", "5032CAE1-6394-E711-80F2-3863BB346B18"),
+                    FilterCondition("createdon", "on-or-after", "2014-08-01"),
+                ]
+            )
+        )
+        .set_attributes(Attribute("incidentid"), Attribute("ticketnumber"),Attribute("coop_descriptionwithouthtml"))
+        .set_order("createdon", descending=True)
+    )
+
+    fetch.build()
+
+    response = await api.fetch_xml_request(fetch)
+
+    return response
