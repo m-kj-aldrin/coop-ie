@@ -32,6 +32,7 @@ class Config(metaclass=Singleton):
             "password": os.getenv("COOPCRM_PASSWORD"),
         }
 
+
         missing_vars = [key for key, value in required_vars.items() if not value]
 
         if missing_vars:

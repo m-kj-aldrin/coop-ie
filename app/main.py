@@ -1,34 +1,78 @@
+from cgitb import html
+from html.parser import HTMLParser
+import html
+import json
 import logging
-import pprint
-import asyncio
 
-from httpx import Response
+import httpx
 from app.config import Config
-from packages.crm.actions import close_incident, close_notification, update_incident
 from packages.crm.api import CrmApi
-
-# from packages.crm.auth import Authenticate
 from packages.crm.auth_async import Authenticate
-from packages.crm.fetch_xml import Attribute, FetchXML, FilterCondition
-from packages.crm.fetch_xml_recipes import (
-    active_incidents_for_user,
-    get_membership_creationfailures,
-    get_notifications_for_inactive_incidents,
-)
-from packages.crm.odata import get_incident
+from packages.crm.odata import OData, compile_odata_params
 from packages.crm.protocols import User
-from packages.data_writer.extract_creationfailure_excel import (
-    extract_key_values,
-    write_to_excel_append,
-)
 
 logging.basicConfig(
     level=logging.CRITICAL,
     format="%(asctime)s - %(levelname)s - [%(filename)s:%(lineno)d] - %(message)s",
 )
 
+TEAM_ID = "5032CAE1-6394-E711-80F2-3863BB346B18"
+COOP_NORRBOTTEN_ID = "7fb8568e-82d1-ee11-9079-6045bd895c47"
+PRODUCTION_MACH1_ID = "f7bd5d0e-8460-ee11-8df0-6045bd895243"
 
-async def main() -> None:
+
+class HTMLTextExtractor(HTMLParser):
+    def __init__(self):
+        super().__init__(convert_charrefs=True)
+        self.text = []
+        self.skip_until_closing_bracket = False
+
+    def handle_data(self, data):
+        logging.debug(f"Handling data: {repr(data)}")
+        text = data.strip()
+
+        # Check if we should start skipping
+        if "[You don't often" in text:
+            self.skip_until_closing_bracket = True
+            logging.debug("Started skipping until closing bracket")
+            return
+
+        # If we're in skip mode and find closing bracket, stop skipping
+        if self.skip_until_closing_bracket and "]" in text:
+            self.skip_until_closing_bracket = False
+            text = text.split("]", 1)[
+                1
+            ].strip()  # Take only text after the closing bracket
+            logging.debug("Found closing bracket, stopped skipping")
+
+        # Skip if we're in skip mode or if it's a comment
+        if (
+            text
+            and not self.skip_until_closing_bracket
+            and not text.startswith("<!--")
+            and not text.endswith("-->")
+        ):
+            self.text.append(text)
+            logging.debug(f"Added text: {repr(text)}")
+
+    def handle_comment(self, data):
+        logging.debug(f"Found comment: {repr(data)}")
+        # Skip comments
+        pass
+
+    def get_text(self):
+        result = " ".join(self.text)
+        logging.debug(f"Final text: {repr(result)}")
+        return result
+
+
+def get_text_from_html(html: str) -> str:
+    parser = HTMLTextExtractor()
+    parser.feed(html)
+    return parser.get_text()
+
+
+async def setup():
     config = Config.load()
 
     user = User(username=config.username, password=config.password)
@@ -43,92 +87,199 @@ async def main() -> None:
         authenticator=authenticator,
     )
 
-    karl_jan_test3_incident_id = "0b29a215-f8b7-ef11-b8e8-7c1e527527f9"
+    return api
 
-    # response = await get_membership_creationfailures(api=api)
 
-    # tasks = []
-    # for incident in response["value"]:
-    #     extracted = extract_key_values(incident["coop_descriptionwithouthtml"])[0]
-    #     extracted["CAS-nummer"] = incident["ticketnumber"]
-    #     # output_file = "C:\\Users\\marald\\Bravedo\\SC Coop - SC Coop Medlemsservice - SC Coop Medlemsservice\\Kundtjänst\\Register (Excel)\\Medlemskap MAD 2021 NY.xlsx"
-    #     output_file = "C:/Users/marald/Bravedo/SC Coop - SC Coop Medlemsservice - SC Coop Medlemsservice/Kundtjänst/Register (Excel)/Medlemskap MAD 2021 NY.xlsx"
-    #     try:
-    #         write_to_excel_append(output_file, extracted)
-    #         # Only close the incident if writing to Excel was successful
-    #         response = asyncio.create_task(close_incident(incident["incidentid"], api=api))
-    #         tasks.append(response)
-    #     except Exception as e:
-    #         print(f"Failed to write to Excel: {e}. Skipping incident closure.")
+EXCLUDE_STRING = " and ".join(
+    f"customerid_contact/contactid ne {id}"
+    for id in [COOP_NORRBOTTEN_ID, PRODUCTION_MACH1_ID]
+)
 
-    # responses = await asyncio.gather(*tasks)
 
-    # print(responses)
-    # print(response)
+async def get_latest_incident_with_contact(api: CrmApi):
+    """Fetch the latest incident assigned to the Medlemsservice team with the related contact."""
+    params = [
+        ("$select", "incidentid,ticketnumber"),
+        (
+            "$filter",
+            f"_owningteam_value eq '{TEAM_ID}' and {EXCLUDE_STRING}",
+        ),
+        ("$orderby", "createdon desc"),
+        ("$top", 2),
+        (
+            "$expand",
+            "customerid_contact($select=contactid,fullname,coop_external_customer_id,coop_personalnumber)",
+        ),
+    ]
+    response = await api.get("incidents", parameters=params)
+    data = response.json().get("value", [])
+    if not data:
+        return None, None
+    latest_incident = data[0]
+    contact_id = latest_incident.get("customerid_contact", {}).get("contactid")
+    return latest_incident, contact_id
 
-    # response = await active_incidents_for_user(api=api)
 
-    # print(response)
+async def get_latest_incident_with_contact_2(api: CrmApi):
+    """Fetch the latest incident assigned to the Medlemsservice team with the related contact."""
+    # print(EXCLUDE_STRING)
+    params = [
+        ("$select", "incidentid,ticketnumber"),
+        (
+            "$filter",
+            f"_owningteam_value eq '{TEAM_ID}' and {EXCLUDE_STRING}",
+        ),
+        ("$orderby", "createdon desc"),
+        ("$top", 1),
+        (
+            "$expand",
+            "customerid_contact($select=contactid,fullname,coop_external_customer_id,coop_personalnumber)",
+        ),
+    ]
+    response = await api.get("incidents", parameters=params)
+    data = response.json().get("value", [])
+    if not data:
+        return None
+    # latest_incident = data[0]
+    # contact_id = latest_incident.get("customerid_contact", {}).get("contactid")
+    return data
 
-    # print(len(response["value"]))
 
-    # tasks = []
-    # for incident in response["value"]:
-    #     id = incident["incidentid"]
-    #     print(id)
-    #     task = asyncio.create_task(close_incident(id, api=api))
-    #     tasks.append(task)
+async def get_related_incidents_with_emails(contact_id: str, api: CrmApi):
+    """Fetch incidents related to a contact."""
+    params = [
+        ("$filter", f"customerid_contact/contactid eq '{contact_id}'"),
+        ("$select", "incidentid,ticketnumber,title"),
+        ("$orderby", "createdon desc"),
+        (
+            "$expand",
+            "Incident_Emails($filter=sender ne 'bekraftelsekundservice@coop.se';$select=subject,description,sender)",
+        ),
+        ("$top", 16),
+    ]
+    response = await api.get("incidents", parameters=params)
+    # print(response.text)
+    data = response.json().get("value", [])
+    for incident in data:
+        emails = incident.get("Incident_Emails", [])
+        for email in emails:
+            email["description"] = get_text_from_html(email["description"])
+    return data
 
-    # responses = await asyncio.gather(*tasks)
 
-    # print(responses)
+# async def get_email_messages_by_incident(incident_id: str, api: CrmApi):
+#     """Fetch email messages related to an incident."""
+#     params = [
+#         ("$filter", f"regardingobjectid_incident_email/incidentid eq '{incident_id}'"),
+#         ("$select", "subject"),
+#         ("$orderby", "createdon desc"),
+#     ]
+#     response = await api.get("emails", parameters=params)
+#     return response.json().get("value", [])
 
-    response = await get_notifications_for_inactive_incidents(api=api)
 
-    tasks = []
-    for notificiation in response["value"]:
-        id = notificiation["coop_notificationid"]
-        print(id)
+async def main() -> None:
+    api = await setup()
 
-        task = asyncio.create_task(close_notification(id, api=api))
-        tasks.append(task)
-        task = asyncio.create_task(
-            close_incident(notificiation["incident1"]["incidentid"], api=api)
+    # o_data_params = [
+    #     ("$select", "incidentid,ticketnumber"),
+    #     (
+    #         "$filter",
+    #         f"_owningteam_value eq '{TEAM_ID}' and {EXCLUDE_STRING} and statecode eq 0",
+    #     ),
+    #     ("$top", 1),
+    #     ("$orderby", "createdon desc"),
+    #     (
+    #         "$expand",
+    #         "customerid_contact($select=contactid,coop_external_customer_id,fullname),Incident_Emails($filter=sender ne 'bekraftelsekundservice@coop.se';$select=subject,description,sender)",
+    #     ),
+    # ]
+    o_data_params = compile_odata_params(
+        OData(
+            select=["incidentid", "ticketnumber","description"],
+            filter=[
+                f"_owningteam_value eq '{TEAM_ID}' and {EXCLUDE_STRING} and statecode eq 0",
+            ],
+            orderby=["createdon desc"],
+            top=1,
+            expand=[
+                OData(
+                    entity="customerid_contact",
+                    select=[
+                        "contactid",
+                        "coop_external_customer_id",
+                        "fullname",
+                    ],
+                ),
+                OData(
+                    entity="Incident_Emails",
+                    select=["subject", "description", "sender"],
+                    filter=["sender ne 'bekraftelsekundservice@coop.se'"],
+                ),
+            ],
         )
-        tasks.append(task)
+    )
 
-    responses = await asyncio.gather(*tasks)
+    # print(json.dumps(o_data_params, indent=4, ensure_ascii=False))
 
-    for response in responses:
-        print(response)
+    response = await api.get(endpoint="incidents", parameters=o_data_params)
+    # print(response.text)
+    data = response.json()["value"][0]
+    # data['description'] = html.unescape(data['description'])
+    print(json.dumps(data, indent=4, ensure_ascii=False))
 
-    # response = await get_incident(incident_id=karl_jan_test3_incident_id, api=api)
+    # print(json.dumps(o_dat_str, indent=4, ensure_ascii=False))
 
-    # pprint.pprint(response.json())
+    # incidents = await get_latest_incident_with_contact_2(api=api)
 
-    # desc = "BLABLABLA"
+    # print(json.dumps(incidents, indent=4, ensure_ascii=False))
 
-    # _ = await update_incident(
-    #     incident_id=karl_jan_test3_incident_id,
-    #     patch_data={
-    #         "description": f'<div class="ck-content" data-wrapper="true" dir="ltr" style="--ck-image-style-spacing: 1.5em; --ck-inline-image-style-spacing: calc(var(--ck-image-style-spacing) / 2); --ck-color-selector-caption-background: hsl(0, 0%, 97%); --ck-color-selector-caption-text: hsl(0, 0%, 20%); font-family: Segoe UI; font-size: 11pt;"><p style="margin: 0;">{desc}</div>'
-    #     },
-    #     api=api,
-    # )
+    # for incident in incidents:
+    #     contact_id = incident.get("customerid_contact", {}).get("contactid")
+    #     # print(contact_id)
 
-    # _ = await close_incident(incident_id=karl_jan_test3_incident_id, api=api)
+    #     related_incidents_emails = await get_related_incidents_with_emails(
+    #         contact_id, api=api
+    #     )
+    #     # print(related_incidents_emails)
+    #     # incident["Incident_Emails"] = emails
+    #     incident["related_incidents"] = related_incidents_emails
 
-    # while True:
-    #     y_n = input("Do you want to continue? (y/n): ")
-    #     if y_n.lower() == "n":
-    #         break
+    # print(json.dumps(incidents, indent=4, ensure_ascii=False))
 
-    #     start = time.time()
-    #     result = await api.fetch_xml_request(fetch)
-    #     print(f"Received {len(result['value'])} incidents")
-    #     end = time.time()
+    # # print(json.dumps(related_emails, indent=4, ensure_ascii=False))
 
-    #     print(f"Total time for request: {end - start}")
+    # # start = time.perf_counter()
+    # # latest_incident, contact_id = await get_latest_incident_with_contact(api)
+    # # end = time.perf_counter()
+    # # print(f"get_latest_incident took {end - start:.2f} seconds")
+    # # if not latest_incident:
+    # #     print("No incidents found for the Medlemsservice team.")
+    # #     return
 
-    #     # dump = json.dumps(result, indent=4, ensure_ascii=False)
-    #     # print(dump)
+    # # pretty = json.dumps(latest_incident, indent=4, ensure_ascii=False)
+    # # print("Latest Incident:\n", pretty)
+
+    # # related_incidents = await get_related_incidents(contact_id, api=api)
+    # # related_emails = []
+    # # for incident in related_incidents:
+    # #     print(f"Processing incident {incident['incidentid']}")
+    # #     emails = await get_email_messages_by_incident(incident["incidentid"], api=api)
+    # #     related_emails.extend(emails)
+
+    # # pretty = json.dumps(related_incidents, indent=4, ensure_ascii=False)
+    # # print(f"Related incidents:\n{pretty}")
+
+    # # data = {
+    # #     **latest_incident,
+    # #     # "related_incidents": related_incidents,
+    # #     # "related_emails": related_emails,
+    # # }
+
+    # # pretty = json.dumps(data, indent=4, ensure_ascii=False)
+    # # print(f"Data:\n{pretty}")
+
+    # # email_messages = await get_email_messages(contact_id, api=api)
+    # # print(f"\nEmail Messages ({len(email_messages)}):")
+    # # for email in email_messages:
+    # #     print(email)

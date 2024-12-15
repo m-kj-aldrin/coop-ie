@@ -3,7 +3,8 @@ import time
 from typing import Any, Literal, MutableMapping, MutableSequence
 from packages.crm.fetch_xml import FetchXML
 from packages.crm.protocols import AuthenticateProtocol
-from httpx import AsyncClient, RequestError, Headers
+from httpx import AsyncClient, QueryParams, RequestError, Headers
+from httpx._types import QueryParamTypes
 
 logger = logging.getLogger(__name__)
 
@@ -48,11 +49,10 @@ class CrmApi:
         self,
         url: str,
         method: Literal["GET", "POST", "PUT", "DELETE", "PATCH"] = "GET",
-        parameters: list[tuple[str, Any]] | None = None,
+        parameters: QueryParamTypes | None = None,
         headers: MutableMapping[str, str] | Headers | None = None,
         data: MutableMapping[str, Any] | None = None,
     ):
-
         if not self.authenticator:
             raise ValueError("Authenticator not set")
 
@@ -65,7 +65,7 @@ class CrmApi:
             logger.error(f"Failed to login: {e}")
 
         if parameters is None:
-            parameters = []
+            parameters = QueryParams()
         if headers is None:
             headers = {}
 
@@ -76,10 +76,10 @@ class CrmApi:
     async def get(
         self,
         endpoint: str,
-        parameters: list[tuple[str, Any]],
+        parameters: QueryParamTypes,
         headers: MutableMapping[str, str] | Headers | None = None,
     ):
-        url = f"{self.base_url}/{self.api_data_endpoint}/{endpoint}"
+        url = f"{self.base_url}{self.api_data_endpoint}/{endpoint}"
 
         return await self.request(method="GET", url=url, parameters=parameters)
 
@@ -89,7 +89,7 @@ class CrmApi:
         data: MutableMapping[str, Any],
         headers: MutableMapping[str, str] | Headers | None = None,
     ):
-        url = f"{self.base_url}/{self.api_data_endpoint}/{endpoint}"
+        url = f"{self.base_url}{self.api_data_endpoint}/{endpoint}"
 
         if headers is None:
             headers = {}
@@ -114,7 +114,7 @@ class CrmApi:
         data: dict[str, Any],
         headers: dict[str, str] | Headers | None = None,
     ):
-        url = f"{self.base_url}/{self.api_data_endpoint}/{endpoint}"
+        url = f"{self.base_url}{self.api_data_endpoint}/{endpoint}"
 
         respone = await self.request(method="POST", url=url, data=data, headers=headers)
 

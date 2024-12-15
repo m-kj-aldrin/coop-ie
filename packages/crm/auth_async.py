@@ -110,10 +110,15 @@ class Authenticate:
                 print("Please enter this number in your phone app")
                 print("=" * 50 + "\n")
 
+                # logger.debug(f"Page content: {await page.content()}")
                 logger.debug("Waiting for stay signed in option")
                 stay_signed_in_selector = "input[type='submit']"
-                _ = await page.wait_for_selector(stay_signed_in_selector, timeout=60000)
-                await page.click(stay_signed_in_selector)
+                el = await page.wait_for_selector(
+                    stay_signed_in_selector, timeout=60000
+                )
+                # logger.debug(f"Element text: {await el.text_content()}")
+                await el.click()
+                # await page.click(stay_signed_in_selector)
 
                 logger.debug("Waiting for redirect to main page")
                 await page.wait_for_url(

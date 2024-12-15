@@ -1,0 +1,27 @@
+.
+├── app
+│   ├── config.py
+│   ├── data
+│   │   └── cookies.json
+│   └── main.py
+├── packages
+│   ├── agents
+│   │   └── orchestrator.py
+│   ├── crm
+│   │   ├── actions.py
+│   │   ├── api.py
+│   │   ├── auth_async.py
+│   │   ├── fetch_xml.py
+│   │   ├── fetch_xml_recipes.py
+│   │   ├── odata.py
+│   │   ├── protocols.py
+│   │   └── xmls
+│   │       └── medlemsservice.xml
+│   ├── data_writer
+│   │   └── extract_creationfailure_excel.py
+│   └── utils
+│       ├── date.py
+│       └── singleton.py
+├── pyproject.toml
+├── run.py
+└── uv.lock
