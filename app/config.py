@@ -1,6 +1,8 @@
 import os
+from typing import override
 from dotenv import load_dotenv
 from packages.utils.singleton import Singleton
+from app.logger import logger
 
 
 class Config(metaclass=Singleton):
@@ -26,23 +28,25 @@ class Config(metaclass=Singleton):
         _ = load_dotenv()
 
         required_vars = {
-            "base_url": os.getenv("BASE_URL"),
-            "api_data_endpoint": os.getenv("API_DATA_ENDPOINT"),
-            "username": os.getenv("COOPCRM_USERNAME"),
-            "password": os.getenv("COOPCRM_PASSWORD"),
+            "base_url": os.getenv("BASE_URL", ""),
+            "api_data_endpoint": os.getenv("API_DATA_ENDPOINT", "").lstrip("/"),
+            "username": os.getenv("COOPCRM_USERNAME", ""),
+            "password": os.getenv("COOPCRM_PASSWORD", ""),
         }
 
-
-        missing_vars = [key for key, value in required_vars.items() if not value]
+        missing_vars = [
+            key.upper() for key, value in required_vars.items() if not value
+        ]
 
         if missing_vars:
             raise ValueError(
                 f"Missing environment variables: {', '.join(missing_vars)}"
             )
 
-        config_vars = {k: str(v) for k, v in required_vars.items()}
+        logger.debug(f"Config loaded: {required_vars}")
 
-        return cls(**config_vars)
+        return cls(**required_vars)
 
+    @override
     def __repr__(self) -> str:
         return f"Config(base_url={self.base_url}, api_data_endpoint={self.api_data_endpoint})"

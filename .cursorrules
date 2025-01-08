@@ -1,0 +1,55 @@
+**Project Instructions**
+
+Always answer in English even though some parts of the codebase are in Swedish as the project will interact with data in Swedish.
+
+1. **High-Level Architecture**  
+   - As before, the project is divided into three core layers/packages:
+     1. **CRM Interaction Layer**: Manages cookie-based authentication, OData queries, and HTTPX-based requests.  
+     2. **Business Logic Layer**: Implements domain-specific workflows such as CRUD operations and “action” methods (e.g., closing incidents or notifications).  
+     3. **LLM Analysis Layer**: Utilizes OpenAI and Google Gemini (via `PydanticAI`) for text-based analyses and decision-making.
+
+2. **Business Logic (Actions and CRUD)**  
+   - **Actions** classes (e.g., `actions.py`) encapsulate common CRM tasks (close incident, update incident, etc.).  
+   - These methods rely on the `CrmApi` from the CRM Interaction Layer to perform actual HTTP requests.  
+   - Each method should do the following:
+     - Accept necessary parameters (IDs, data, etc.) and an instance of `CrmApi`.  
+     - Construct the appropriate OData string (e.g., `incidents({id})`).  
+     - Call the relevant CRUD method (`get`, `patch`, `post`, etc.) on the `CrmApi` instance.  
+     - Perform error handling (e.g., `response.raise_for_status()`) and logging.  
+   - This approach keeps the **CRM logic** (requests, endpoints) in a single place, while making the **action interface** simpler for the rest of the application.
+
+3. **OData Usage**  
+   - The `OData` dataclass (with `select`, `filter`, `expand`, etc.) and `compile_odata_params()` function help structure read queries.  
+   - For other operations (patch, post, delete), standard endpoints (like `incidents({id})`) are typically sufficient.  
+   - If you need advanced OData parameters for update actions (e.g., partial updates with filters), follow the same logic to construct query parameters.
+
+4. **Cookie-Based Authentication**  
+   - A separate Playwright-based authenticator ensures the `CrmOwinAuth` cookie is fresh.  
+   - `CrmApi` uses that cookie in its session to authenticate requests.  
+   - Always check or refresh authentication before performing the CRUD/action methods.
+
+5. **CRM Interaction Layer**  
+   - `CrmApi` provides a consistent interface (`get`, `post`, `patch`, etc.) for all CRM requests.  
+   - Each method logs relevant request/response details and raises descriptive errors when something fails.  
+   - Use OData-based methods (e.g., `OData_request`) for queries requiring filters, expansions, etc.
+
+6. **LLM Analysis Layer**  
+   - Not shown directly in the `actions.py` snippet but remains a separate package or module.  
+   - Utilizes `PydanticAI` to call OpenAI or Gemini LLMs for analyzing incoming messages or cases.  
+   - The result of these LLM analyses could drive which actions are invoked in `actions.py` (e.g., auto-close a case under certain conditions).
+
+7. **Logging and Error Handling**  
+   - Use the `logging` module to record significant events (which actions are being called, data changes, exceptions, etc.).  
+   - If an action fails, raise an exception that accurately describes the error context (invalid CRM response, missing data, etc.).  
+   - Keep logs verbose enough to troubleshoot production issues quickly.
+
+8. **Project Structure and Maintainability**  
+   - Store actions, data classes (e.g., `Action`, `OData`), and supporting utilities in logically separated modules:
+     - `packages.crm` for CRM API code and OData utilities.  
+     - `packages.business` (or a similar name) for “actions” like updating or closing incidents.  
+     - `packages.llm` for all LLM-related functionality.  
+   - Use **Python 3.12+** and **type hints** across all code, including function parameters and return types.  
+   - Provide comprehensive docstrings for each action or utility function to facilitate future maintenance and onboarding.  
+   - Write targeted unit or integration tests for the business logic (e.g., testing `close_incident()` logic or `update_incident()` with mocked CRM responses).  
+
+By following these guidelines, the **actions** pattern shown in `actions.py` remains clear, modular, and consistent with the overarching architecture, making it straightforward to extend or integrate with other parts of the system.

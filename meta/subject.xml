@@ -1,0 +1,59 @@
+<EntityType Name="subject" BaseType="mscrm.crmbaseentity">
+    <Key>
+        <PropertyRef Name="subjectid"/>
+    </Key>
+    <Property Name="importsequencenumber" Type="Edm.Int32"/>
+    <Property Name="description" Type="Edm.String" Unicode="false"/>
+    <Property Name="createdon" Type="Edm.DateTimeOffset"/>
+    <Property Name="_modifiedbyexternalparty_value" Type="Edm.Guid"/>
+    <Property Name="_parentsubject_value" Type="Edm.Guid"/>
+    <Property Name="_organizationid_value" Type="Edm.Guid"/>
+    <Property Name="_createdbyexternalparty_value" Type="Edm.Guid"/>
+    <Property Name="versionnumber" Type="Edm.Int64"/>
+    <Property Name="_modifiedby_value" Type="Edm.Guid"/>
+    <Property Name="subjectid" Type="Edm.Guid"/>
+    <Property Name="_createdonbehalfby_value" Type="Edm.Guid"/>
+    <Property Name="title" Type="Edm.String" Unicode="false"/>
+    <Property Name="modifiedon" Type="Edm.DateTimeOffset"/>
+    <Property Name="featuremask" Type="Edm.Int32"/>
+    <Property Name="_modifiedonbehalfby_value" Type="Edm.Guid"/>
+    <Property Name="overriddencreatedon" Type="Edm.DateTimeOffset"/>
+    <Property Name="_createdby_value" Type="Edm.Guid"/>
+    <NavigationProperty Name="Subject_ProcessSessions" Type="Collection(mscrm.processsession)" Partner="regardingobjectid_subject"/>
+    <NavigationProperty Name="createdby" Type="mscrm.systemuser" Nullable="false" Partner="lk_subjectbase_createdby">
+        <ReferentialConstraint Property="_createdby_value" ReferencedProperty="systemuserid"/>
+    </NavigationProperty>
+    <NavigationProperty Name="modifiedby" Type="mscrm.systemuser" Nullable="false" Partner="lk_subjectbase_modifiedby">
+        <ReferentialConstraint Property="_modifiedby_value" ReferencedProperty="systemuserid"/>
+    </NavigationProperty>
+    <NavigationProperty Name="modifiedonbehalfby" Type="mscrm.systemuser" Nullable="false" Partner="lk_subject_modifiedonbehalfby">
+        <ReferentialConstraint Property="_modifiedonbehalfby_value" ReferencedProperty="systemuserid"/>
+    </NavigationProperty>
+    <NavigationProperty Name="parentsubject" Type="mscrm.subject" Nullable="false" Partner="subject_parent_subject">
+        <ReferentialConstraint Property="_parentsubject_value" ReferencedProperty="subjectid"/>
+    </NavigationProperty>
+    <NavigationProperty Name="subject_parent_subject" Type="Collection(mscrm.subject)" Partner="parentsubject"/>
+    <NavigationProperty Name="createdonbehalfby" Type="mscrm.systemuser" Nullable="false" Partner="lk_subject_createdonbehalfby">
+        <ReferentialConstraint Property="_createdonbehalfby_value" ReferencedProperty="systemuserid"/>
+    </NavigationProperty>
+    <NavigationProperty Name="Subject_AsyncOperations" Type="Collection(mscrm.asyncoperation)" Partner="regardingobjectid_subject"/>
+    <NavigationProperty Name="Subject_SyncErrors" Type="Collection(mscrm.syncerror)" Partner="regardingobjectid_subject_syncerror"/>
+    <NavigationProperty Name="subject_kb_articles" Type="Collection(mscrm.kbarticle)" Partner="subjectid"/>
+    <NavigationProperty Name="subject_knowledgearticles" Type="Collection(mscrm.knowledgearticle)" Partner="subjectid"/>
+    <NavigationProperty Name="Subject_BulkDeleteFailures" Type="Collection(mscrm.bulkdeletefailure)" Partner="regardingobjectid_subject"/>
+    <NavigationProperty Name="subject_products" Type="Collection(mscrm.product)" Partner="subjectid"/>
+    <NavigationProperty Name="subject_sales_literature" Type="Collection(mscrm.salesliterature)" Partner="subjectid"/>
+    <NavigationProperty Name="coop_subject_coop_activitylisttemplate" Type="Collection(mscrm.coop_activitylisttemplate)" Partner="coop_SubjectId"/>
+    <NavigationProperty Name="coop_subject_coop_alertconfiguration_SubjectId" Type="Collection(mscrm.coop_alertconfiguration)" Partner="coop_SubjectId"/>
+    <NavigationProperty Name="coop_subject_coop_categorynotification_RelatedCategory" Type="Collection(mscrm.coop_categorynotification)" Partner="coop_RelatedCategory"/>
+    <NavigationProperty Name="coop_subject_coop_escalationconfiguration_SubjectId" Type="Collection(mscrm.coop_escalationconfiguration)" Partner="coop_SubjectId"/>
+    <NavigationProperty Name="coop_subject_coop_relationproductcase" Type="Collection(mscrm.coop_relationproductcase)" Partner="coop_subjectid"/>
+    <NavigationProperty Name="msdyn_subject_knowledgearticletemplate_subjectid" Type="Collection(mscrm.msdyn_knowledgearticletemplate)" Partner="msdyn_subjectid"/>
+    <NavigationProperty Name="adx_subject_webfile" Type="Collection(mscrm.adx_webfile)" Partner="adx_subjectid"/>
+    <NavigationProperty Name="adx_subject_webpage" Type="Collection(mscrm.adx_webpage)" Partner="adx_subjectid"/>
+    <NavigationProperty Name="coop_coop_casetemplate_subjectid_subject" Type="Collection(mscrm.coop_casetemplate)" Partner="coop_subjectid"/>
+    <NavigationProperty Name="organizationid" Type="mscrm.organization" Nullable="false" Partner="organization_subjects">
+        <ReferentialConstraint Property="_organizationid_value" ReferencedProperty="organizationid"/>
+    </NavigationProperty>
+    <NavigationProperty Name="subject_incidents" Type="Collection(mscrm.incident)" Partner="subjectid"/>
+</EntityType>

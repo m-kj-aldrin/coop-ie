@@ -1,33 +1,41 @@
+from typing import Any
 from playwright.async_api import async_playwright, TimeoutError
 import json
 import os
 import time
-import logging
-from packages.crm.protocols import User, Cookie
-
-# Configure logging
-logger = logging.getLogger(__name__)
-
-# from playwright.sync_api import sync_playwright, TimeoutError
+from app.constants import USER_AGENT
+from packages.crm.models import User, Cookie
+from app.logger import logger
 
 
 class Authenticate:
     _cookies: dict[str, Cookie] = {}
     _user: User | None = None
-    _cookie_file_path: str = os.path.join(os.getcwd(), "app", "data", "cookies.json")
+    _cookie_file_path: str = os.path.join(
+        os.getcwd(), "app", "data", "cookies.json")
     _login_url: str
     _redirect_url: str
 
     def __init__(self, login_url: str, redirect_url: str):
         self._login_url = login_url
         self._redirect_url = redirect_url
-        self.load_cookies()
+        _ = self.load_cookies()
 
     async def login(self, user: User | None = None):
+        """
+        Authenticates the user using Playwright to automate browser actions.
+
+        Args:
+            user (User | None): The user credentials. If None, uses the existing user.
+
+        Raises:
+            ValueError: If no user is provided for authentication.
+            Exception: For various authentication failures.
+        """
         logger.debug("Starting login process")
 
         if self.is_authenticated:
-            logger.info("User already authenticated")
+            logger.debug("User already authenticated")
             return self
 
         _user = user or self._user
@@ -59,66 +67,91 @@ class Authenticate:
                 return self
 
             logger.debug("Creating new browser context")
-            context = await browser.new_context(
-                user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
-            )
+            context = await browser.new_context(user_agent=USER_AGENT)
             page = await context.new_page()
-
-            # Debug user agent
-            actual_user_agent = await page.evaluate("() => navigator.userAgent")
-            logger.info(f"Current User Agent: {actual_user_agent}")
 
             try:
                 logger.debug(f"Navigating to login URL: {self._login_url}")
                 _ = await page.goto(self._login_url, timeout=60000)
 
                 logger.debug("Waiting for username input")
-                _ = await page.wait_for_selector(
-                    "input[name='loginfmt']", timeout=20000
+                user_name_element = await page.wait_for_selector(
+                    "input[name='loginfmt']"
                 )
-                _ = await page.fill("input[name='loginfmt']", _user.username)
-                _ = await page.press("input[name='loginfmt']", "Enter")
+
+                if not user_name_element:
+                    logger.error("Failed to find username input element")
+                    raise Exception("Failed to find username input element")
+
+                _ = await user_name_element.fill(_user.username)
+                _ = await user_name_element.press("Enter")
                 logger.debug("Username entered successfully")
 
                 logger.debug("Waiting for password input")
-                _ = await page.wait_for_selector("input[name='passwd']", timeout=20000)
-                _ = await page.fill("input[name='passwd']", _user.password)
-                _ = await page.click("input[type='submit']")
+                password_element = await page.wait_for_selector(
+                    "input[name='passwd']", timeout=20000
+                )
+
+                if not password_element:
+                    logger.error("Failed to find password input element")
+                    raise Exception("Failed to find password input element")
+
+                _ = await password_element.fill(_user.password)
+                _ = await password_element.press("Enter")
                 logger.debug("Password entered successfully")
 
                 logger.debug("Waiting for phone authentication")
-                phone_auth_selector = "[data-value='PhoneAppNotification']"
-                _ = await page.wait_for_selector(phone_auth_selector, timeout=60000)
-                _ = await page.click(phone_auth_selector)
+                phone_auth_element = await page.wait_for_selector(
+                    "[data-value='PhoneAppNotification']", timeout=60000
+                )
+
+                if not phone_auth_element:
+                    logger.error("Failed to find phone authentication element")
+                    raise Exception(
+                        "Failed to find phone authentication element")
+
+                _ = await phone_auth_element.click()
 
                 logger.debug("Waiting for authentication number")
-                auth_number_selector = ".display-sign-container"
-                _ = await page.wait_for_selector(auth_number_selector, timeout=60000)
-                auth_number_element = await page.text_content(
-                    auth_number_selector, timeout=60000
+                auth_number_element = await page.wait_for_selector(
+                    ".display-sign-container", timeout=60000
                 )
 
                 if not auth_number_element:
+                    logger.error(
+                        "Failed to find authentication number element")
+                    raise Exception(
+                        "Failed to find authentication number element")
+
+                auth_number = await auth_number_element.text_content()
+
+                if not auth_number:
                     logger.error("Failed to get authentication number")
-                    return self
+                    raise Exception("Failed to get authentication number")
 
-                auth_number = auth_number_element.replace(" ", "").replace("\n", "")
-                logger.info(f"Authentication number received: {auth_number}")
+                auth_number = auth_number.replace(" ", "").replace("\n", "")
 
-                print("\n" + "=" * 50)
-                print(f"AUTHENTICATION NUMBER: {auth_number}")
-                print("Please enter this number in your phone app")
-                print("=" * 50 + "\n")
+                logger.debug(f"Authentication number received: {auth_number}")
 
-                # logger.debug(f"Page content: {await page.content()}")
-                logger.debug("Waiting for stay signed in option")
-                stay_signed_in_selector = "input[type='submit']"
-                el = await page.wait_for_selector(
-                    stay_signed_in_selector, timeout=60000
+                print(
+                    (
+                        f"\n{"=" * 50}"
+                        f"\nAUTHENTICATION NUMBER: {auth_number}"
+                        f"\nPlease enter this number in your phone app"
+                        f"\n{"=" * 50}"
+                    )
                 )
-                # logger.debug(f"Element text: {await el.text_content()}")
-                await el.click()
-                # await page.click(stay_signed_in_selector)
+
+                logger.debug("Waiting for stay signed in option")
+                stay_signed_in_element = await page.wait_for_selector(
+                    "input[type='submit']"
+                )
+
+                if not stay_signed_in_element:
+                    logger.error("Failed to find stay signed in element")
+                    raise Exception("Failed to find stay signed in element")
+
+                await stay_signed_in_element.click()
 
                 logger.debug("Waiting for redirect to main page")
                 await page.wait_for_url(
@@ -126,43 +159,44 @@ class Authenticate:
                     timeout=60000,
                 )
 
-                logger.debug("Getting cookies")
                 cookies_to_grab = [
                     "orgId",
                     "ReqClientId",
                     "CrmOwinAuth",
                     "ARRAffinity",
                 ]
-                cookies_list = [
-                    c
-                    for c in await context.cookies(self._login_url)
-                    if c.get("name") and c.get("value")
-                ] or []
 
-                self._cookies = {
-                    c.get("name"): Cookie(
-                        name=c.get("name"),
-                        value=c.get("value"),
+                logger.debug(f"Getting cookies: {', '.join(cookies_to_grab)}")
+
+                grabbed_cookies = {
+                    c.get("name", ""): Cookie(
+                        name=c.get("name", ""),
+                        value=c.get("value", ""),
                         expires=c.get("expires"),
                         domain=c.get("domain"),
                         path=c.get("path"),
                     )
-                    for c in cookies_list
+                    for c in await context.cookies(self._login_url)
                     if c.get("name") in cookies_to_grab
                 }
 
+                self._cookies = grabbed_cookies
+
                 if not self.cookies:
-                    logger.error("No cookies were captured after authentication")
+                    logger.error(
+                        "No cookies were captured after authentication")
                     return self
 
                 logger.info("Authentication completed successfully")
                 logger.debug(f"Captured {len(self._cookies)} cookies")
 
             except TimeoutError as e:
-                logger.error(f"Timeout during authentication process: {str(e)}")
+                logger.error(
+                    f"Timeout during authentication process: {str(e)}")
                 return self
             except Exception as e:
-                logger.error(f"Unexpected error during authentication: {str(e)}")
+                logger.error(
+                    f"Unexpected error during authentication: {str(e)}")
                 return self
             finally:
                 logger.debug("Closing browser")
@@ -195,7 +229,7 @@ class Authenticate:
         """
         if os.path.exists(self._cookie_file_path):
             with open(self._cookie_file_path, "r") as f:
-                data = json.load(f)
+                data: dict[str, Any] = json.load(f)
                 self._cookies = {c: Cookie.from_json(data[c]) for c in data}
         return self
 
@@ -204,31 +238,25 @@ class Authenticate:
         return self._cookies
 
     @property
-    def is_authenticated(self):
+    def is_authenticated(self) -> bool:
+        """
+        Check if we have valid authentication.
+        Includes a 5-minute buffer before expiration to prevent edge cases.
+        """
         if not self.cookies:
-            print("There is no cookies, try to load cookies")
+            logger.debug("No cookies found, attempting to load from file")
             _ = self.load_cookies()
 
         auth_cookie = self.cookies.get("CrmOwinAuth")
-
-        # print(f"Cookies: {self.cookies}")
-
-        # print(f"Auth cookie: {auth_cookie}")
-
-        if not auth_cookie:
+        if not auth_cookie or not auth_cookie.expires:
+            logger.debug("No valid auth cookie found")
             return False
 
-        expires = auth_cookie.expires
-
-        if not expires:
-            return False
-
+        buffer_time = 300
         current_time = time.time()
 
-        if expires < current_time:
-            print("Auth cookie is expired")
+        if auth_cookie.expires - current_time <= buffer_time:
+            logger.debug("Auth cookie is expired or will expire soon")
             return False
-
-        # print("Auth cookie is valid")
 
         return True

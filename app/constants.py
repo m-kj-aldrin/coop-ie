@@ -1,0 +1,8 @@
+MEDLEMSSERVICE_ID = "5032CAE1-6394-E711-80F2-3863BB346B18"
+COOP_NORRBOTTEN_ID = "7fb8568e-82d1-ee11-9079-6045bd895c47"
+PRODUCTION_MACH1_ID = "f7bd5d0e-8460-ee11-8df0-6045bd895243"
+EXCLUDE_STRING = " and ".join(
+    f"customerid_contact/contactid ne {id}"
+    for id in [COOP_NORRBOTTEN_ID, PRODUCTION_MACH1_ID]
+)
+USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"

@@ -1,0 +1,53 @@
+<EntityType Name="incidentresolution" BaseType="mscrm.activitypointer">
+    <Key>
+        <PropertyRef Name="activityid"/>
+    </Key>
+    <Property Name="_incidentid_value" Type="Edm.Guid"/>
+    <Property Name="subcategory" Type="Edm.String" Unicode="false"/>
+    <Property Name="importsequencenumber" Type="Edm.Int32"/>
+    <Property Name="totaltimespent" Type="Edm.Int32"/>
+    <Property Name="msdyn_proposeknowledge" Type="Edm.Boolean"/>
+    <Property Name="_modifiedbyexternalparty_value" Type="Edm.Guid"/>
+    <Property Name="resolutiontypecode" Type="Edm.Int32"/>
+    <Property Name="category" Type="Edm.String" Unicode="false"/>
+    <Property Name="timespent" Type="Edm.Int32"/>
+    <Property Name="overriddencreatedon" Type="Edm.DateTimeOffset"/>
+    <Property Name="_createdbyexternalparty_value" Type="Edm.Guid"/>
+    <NavigationProperty Name="regardingobjectid_new_interactionforemail_incidentresolution" Type="mscrm.interactionforemail" Nullable="false" Partner="interactionforemail_IncidentResolutions"/>
+    <NavigationProperty Name="regardingobjectid_entitlement_incidentresolution" Type="mscrm.entitlement" Nullable="false" Partner="entitlement_IncidentResolutions"/>
+    <NavigationProperty Name="regardingobjectid_entitlementtemplate_incidentresolution" Type="mscrm.entitlementtemplate" Nullable="false" Partner="entitlementtemplate_IncidentResolutions"/>
+    <NavigationProperty Name="regardingobjectid_bookableresourcebooking_incidentresolution" Type="mscrm.bookableresourcebooking" Nullable="false" Partner="bookableresourcebooking_IncidentResolutions"/>
+    <NavigationProperty Name="regardingobjectid_bookableresourcebookingheader_incidentresolution" Type="mscrm.bookableresourcebookingheader" Nullable="false" Partner="bookableresourcebookingheader_IncidentResolutions"/>
+    <NavigationProperty Name="regardingobjectid_knowledgebaserecord_incidentresolution" Type="mscrm.knowledgebaserecord" Nullable="false" Partner="knowledgebaserecord_IncidentResolutions"/>
+    <NavigationProperty Name="regardingobjectid_account_incidentresolution" Type="mscrm.account" Nullable="false" Partner="account_IncidentResolutions"/>
+    <NavigationProperty Name="sendermailboxid_incidentresolution" Type="mscrm.mailbox" Nullable="false" Partner="incidentresolution_mailbox_sendermailboxid"/>
+    <NavigationProperty Name="transactioncurrencyid_incidentresolution" Type="mscrm.transactioncurrency" Nullable="false" Partner="incidentresolution_transactioncurrency_transactioncurrencyid"/>
+    <NavigationProperty Name="ownerid_incidentresolution" Type="mscrm.principal" Nullable="false" Partner="incidentresolution_owner_ownerid"/>
+    <NavigationProperty Name="sla_activitypointer_sla_incidentresolution" Type="mscrm.sla" Nullable="false" Partner="incidentresolution_sla_slaid"/>
+    <NavigationProperty Name="regardingobjectid_knowledgearticle_incidentresolution" Type="mscrm.knowledgearticle" Nullable="false" Partner="knowledgearticle_IncidentResolutions"/>
+    <NavigationProperty Name="regardingobjectid_lead_incidentresolution" Type="mscrm.lead" Nullable="false" Partner="lead_IncidentResolutions"/>
+    <NavigationProperty Name="regardingobjectid_bulkoperation_incidentresolution" Type="mscrm.bulkoperation" Nullable="false" Partner="bulkoperation_IncidentResolutions"/>
+    <NavigationProperty Name="regardingobjectid_campaign_incidentresolution" Type="mscrm.campaign" Nullable="false" Partner="campaign_IncidentResolutions"/>
+    <NavigationProperty Name="regardingobjectid_campaignactivity_incidentresolution" Type="mscrm.campaignactivity" Nullable="false" Partner="campaignactivity_IncidentResolutions"/>
+    <NavigationProperty Name="slainvokedid_activitypointer_sla_incidentresolution" Type="mscrm.sla" Nullable="false" Partner="incidentresolution_sla_slainvokedid"/>
+    <NavigationProperty Name="CampaignResponse_IncidentResolutions" Type="Collection(mscrm.campaignresponse)" Partner="originatingactivityid_incidentresolution_campaignresponse"/>
+    <NavigationProperty Name="incidentresolution_MailboxTrackingFolders" Type="Collection(mscrm.mailboxtrackingfolder)" Partner="regardingobjectid_incidentresolution"/>
+    <NavigationProperty Name="incidentresolution_PrincipalObjectAttributeAccesses" Type="Collection(mscrm.principalobjectattributeaccess)" Partner="objectid_incidentresolution"/>
+    <NavigationProperty Name="owningbusinessunit_incidentresolution" Type="mscrm.businessunit" Nullable="false" Partner="business_unit_incident_resolution_activities"/>
+    <NavigationProperty Name="IncidentResolution_SyncErrors" Type="Collection(mscrm.syncerror)" Partner="regardingobjectid_incidentresolution_syncerror"/>
+    <NavigationProperty Name="activityid_activitypointer" Type="mscrm.activitypointer" Nullable="false" Partner="activity_pointer_incident_resolution"/>
+    <NavigationProperty Name="incidentid" Type="mscrm.incident" Nullable="false" Partner="Incident_IncidentResolutions">
+        <ReferentialConstraint Property="_incidentid_value" ReferencedProperty="incidentid"/>
+    </NavigationProperty>
+    <NavigationProperty Name="incidentresolution_activity_parties" Type="Collection(mscrm.activityparty)" Partner="activityid_incidentresolution"/>
+    <NavigationProperty Name="IncidentResolution_AsyncOperations" Type="Collection(mscrm.asyncoperation)" Partner="regardingobjectid_incidentresolution"/>
+    <NavigationProperty Name="IncidentResolution_BulkDeleteFailures" Type="Collection(mscrm.bulkdeletefailure)" Partner="regardingobjectid_incidentresolution"/>
+    <NavigationProperty Name="serviceid_incidentresolution" Type="mscrm.service" Nullable="false" Partner="service_incidentresolutions"/>
+    <NavigationProperty Name="owninguser_incidentresolution" Type="mscrm.systemuser" Nullable="false" Partner="user_incidentresolution"/>
+    <NavigationProperty Name="owningteam_incidentresolution" Type="mscrm.team" Nullable="false" Partner="team_incidentresolution"/>
+    <NavigationProperty Name="createdonbehalfby_incidentresolution" Type="mscrm.systemuser" Nullable="false" Partner="lk_incidentresolution_createdonbehalfby"/>
+    <NavigationProperty Name="modifiedonbehalfby_incidentresolution" Type="mscrm.systemuser" Nullable="false" Partner="lk_incidentresolution_modifiedonbehalfby"/>
+    <NavigationProperty Name="createdby_incidentresolution" Type="mscrm.systemuser" Nullable="false" Partner="lk_incidentresolution_createdby"/>
+    <NavigationProperty Name="modifiedby_incidentresolution" Type="mscrm.systemuser" Nullable="false" Partner="lk_incidentresolution_modifiedby"/>
+    <NavigationProperty Name="IncidentResolution_Annotation" Type="Collection(mscrm.annotation)" Partner="objectid_incidentresolution"/>
+</EntityType>

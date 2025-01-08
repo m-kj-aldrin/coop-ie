@@ -1,0 +1,550 @@
+<EntityType Name="incident" BaseType="mscrm.crmbaseentity">
+    <Key>
+        <PropertyRef Name="incidentid" />
+    </Key>
+    <Property Name="coop_caseregarding" Type="Edm.Int32" />
+    <Property Name="coop_goodsvalue" Type="Edm.Int32" />
+    <Property Name="stageid" Type="Edm.Guid" />
+    <Property Name="_coop_regardingstoreid_value" Type="Edm.Guid" />
+    <Property Name="coop_hr_vikarierarfor" Type="Edm.String" Unicode="false" />
+    <Property Name="coop_status_claims" Type="Edm.Int32" />
+    <Property Name="coop_purchasingservicecasetype" Type="Edm.Int32" />
+    <Property Name="_coop_ldcid_value" Type="Edm.Guid" />
+    <Property Name="coop_everfresh_invoice_amount_state" Type="Edm.Int32" />
+    <Property Name="_coop_webformsender_value" Type="Edm.Guid" />
+    <Property Name="coop_invoicedamount" Type="Edm.Int32" />
+    <Property Name="coop_invoiceflag2" Type="Edm.Int32" />
+    <Property Name="coop_feedbackdate" Type="Edm.DateTimeOffset" />
+    <Property Name="coop_casestatus" Type="Edm.Int32" />
+    <Property Name="coop_invoiceno" Type="Edm.Int32" />
+    <Property Name="_owninguser_value" Type="Edm.Guid" />
+    <Property Name="coop_description" Type="Edm.String" Unicode="false" />
+    <Property Name="coop_cause" Type="Edm.Int32" />
+    <Property Name="severitycode" Type="Edm.Int32" />
+    <Property Name="coop_counterpartcomment" Type="Edm.Int32" />
+    <Property Name="overriddencreatedon" Type="Edm.DateTimeOffset" />
+    <Property Name="coop_everfresh_category" Type="Edm.Int32" />
+    <Property Name="coop_reason" Type="Edm.String" Unicode="false" />
+    <Property Name="coop_gtin" Type="Edm.String" Unicode="false" />
+    <Property Name="entityimage_timestamp" Type="Edm.Int64" />
+    <Property Name="coop_hr_description" Type="Edm.String" Unicode="false" />
+    <Property Name="msdyn_copilotengaged" Type="Edm.Boolean" />
+    <Property Name="coop_hr_orsaktillvikariat" Type="Edm.String" Unicode="false" />
+    <Property Name="coop_underlagsnummer" Type="Edm.String" Unicode="false" />
+    <Property Name="coop_numberofscannings_state" Type="Edm.Int32" />
+    <Property Name="description" Type="Edm.String" Unicode="false" />
+    <Property Name="coop_ordernumber" Type="Edm.String" Unicode="false" />
+    <Property Name="coop_hr_end_date_new" Type="Edm.DateTimeOffset" />
+    <Property Name="_slaid_value" Type="Edm.Guid" />
+    <Property Name="coop_claimvalues" Type="Edm.Decimal" Scale="Variable" />
+    <Property Name="caseage" Type="Edm.String" Unicode="false" />
+    <Property Name="coop_testdescription" Type="Edm.String" Unicode="false" />
+    <Property Name="coop_saknarmedarbetarepersonalrabatt" Type="Edm.Int32" />
+    <Property Name="coop_hr_salary_supplement" Type="Edm.String" Unicode="false" />
+    <Property Name="_socialprofileid_value" Type="Edm.Guid" />
+    <Property Name="emailaddress" Type="Edm.String" Unicode="false" />
+    <Property Name="resolvebyslastatus" Type="Edm.Int32" />
+    <Property Name="customercontacted" Type="Edm.Boolean" />
+    <Property Name="coop_invoicedatetocounterparty" Type="Edm.DateTimeOffset" />
+    <Property Name="coop_transportor2" Type="Edm.Int32" />
+    <Property Name="coop_bankcasetype" Type="Edm.Int32" />
+    <Property Name="_modifiedonbehalfby_value" Type="Edm.Guid" />
+    <Property Name="customersatisfactioncode" Type="Edm.Int32" />
+    <Property Name="escalatedon" Type="Edm.DateTimeOffset" />
+    <Property Name="firstresponseslastatus" Type="Edm.Int32" />
+    <Property Name="resolveby" Type="Edm.DateTimeOffset" />
+    <Property Name="coop_resolvedon" Type="Edm.DateTimeOffset" />
+    <Property Name="coop_hr_cost_center" Type="Edm.Int32" />
+    <Property Name="coop_dateintocomplaintresponsible" Type="Edm.DateTimeOffset" />
+    <Property Name="_createdbyexternalparty_value" Type="Edm.Guid" />
+    <Property Name="lastinteraction" Type="Edm.String" Unicode="false" />
+    <Property Name="_coop_previouscaseowner_value" Type="Edm.Guid" />
+    <Property Name="coop_othercomments" Type="Edm.String" Unicode="false" />
+    <Property Name="_coop_deviationsubtype_id_value" Type="Edm.Guid" />
+    <Property Name="coop_coopgoodsvalues" Type="Edm.Decimal" Scale="Variable" />
+    <Property Name="coop_typeoftransportdamage" Type="Edm.String" Unicode="false" />
+    <Property Name="_masterid_value" Type="Edm.Guid" />
+    <Property Name="incidentid" Type="Edm.Guid" />
+    <Property Name="coop_kross_claim_value" Type="Edm.Decimal" Scale="Variable" />
+    <Property Name="coop_reminderrun" Type="Edm.Boolean" />
+    <Property Name="coop_hr_case_origin" Type="Edm.Int32" />
+    <Property Name="coop_category_bs_portal" Type="Edm.Int32" />
+    <Property Name="servicestage" Type="Edm.Int32" />
+    <Property Name="msdyn_precreatenotesid" Type="Edm.String" Unicode="false" />
+    <Property Name="coop_hr_recruiters_managers_manager" Type="Edm.String" Unicode="false" />
+    <Property Name="coop_ldc" Type="Edm.Int32" />
+    <Property Name="statuscode" Type="Edm.Int32" />
+    <Property Name="coop_numberofscannings_date" Type="Edm.DateTimeOffset" />
+    <Property Name="coop_senttocomplaintresponsible" Type="Edm.Boolean" />
+    <Property Name="coop_casenumbercarrier" Type="Edm.String" Unicode="false" />
+    <Property Name="coop_date" Type="Edm.DateTimeOffset" />
+    <Property Name="coop_hr_deadline_application" Type="Edm.DateTimeOffset" />
+    <Property Name="lastonholdtime" Type="Edm.DateTimeOffset" />
+    <Property Name="coop_alertstarttime" Type="Edm.DateTimeOffset" />
+    <Property Name="_coop_relatedcaseuniqueid_value" Type="Edm.Guid" />
+    <Property Name="coop_hr_advertisement_length" Type="Edm.Int32" />
+    <Property Name="coop_decisioncomplaintresponsible" Type="Edm.String" Unicode="false" />
+    <Property Name="coop_originalorderno" Type="Edm.String" Unicode="false" />
+    <Property Name="coop_deliverydate" Type="Edm.DateTimeOffset" />
+    <Property Name="coop_noofrpu" Type="Edm.Decimal" Scale="Variable" />
+    <Property Name="coop_contactemailpreference" Type="Edm.Int32" />
+    <Property Name="coop_hr_contact_email" Type="Edm.String" Unicode="false" />
+    <Property Name="coop_olderthan1day" Type="Edm.Boolean" />
+    <Property Name="coop_deviationdescriptionsv" Type="Edm.String" Unicode="false" />
+    <Property Name="coop_hr_contact" Type="Edm.String" Unicode="false" />
+    <Property Name="coop_hascasebeenhandledbycustomerservice" Type="Edm.Boolean" />
+    <Property Name="coop_securityincidentnumber" Type="Edm.String" Unicode="false" />
+    <Property Name="coop_invoiceamount" Type="Edm.Decimal" Scale="Variable" />
+    <Property Name="coop_hr_recruitment_manager" Type="Edm.String" Unicode="false" />
+    <Property Name="coop_invoiced" Type="Edm.Boolean" />
+    <Property Name="coop_incidentdate" Type="Edm.DateTimeOffset" />
+    <Property Name="_primarycontactid_value" Type="Edm.Guid" />
+    <Property Name="coop_terminalsolutiondescription" Type="Edm.String" Unicode="false" />
+    <Property Name="coop_resolution_status" Type="Edm.Int32" />
+    <Property Name="coop_requesttype" Type="Edm.Int32" />
+    <Property Name="coop_hr_union_rep" Type="Edm.String" Unicode="false" />
+    <Property Name="coop_phonenumber" Type="Edm.String" Unicode="false" />
+    <Property Name="coop_otherexpenses" Type="Edm.Int32" />
+    <Property Name="deactivatedon" Type="Edm.DateTimeOffset" />
+    <Property Name="coop_caseforchange" Type="Edm.Boolean" />
+    <Property Name="coop_levererandeterminal" Type="Edm.Int32" />
+    <Property Name="coop_numberofscannings" Type="Edm.Int32" />
+    <Property Name="coop_originatingqueue" Type="Edm.String" Unicode="false" />
+    <Property Name="sentimentvalue" Type="Edm.Double" />
+    <Property Name="incidentstagecode" Type="Edm.Int32" />
+    <Property Name="coop_abortallescalations" Type="Edm.Boolean" />
+    <Property Name="coop_hrportalstatus" Type="Edm.Int32" />
+    <Property Name="_coop_reasontype_value" Type="Edm.Guid" />
+    <Property Name="coop_deviationregisteredonfreightdocument" Type="Edm.Boolean" />
+    <Property Name="_coop_relationproducttocase_value" Type="Edm.Guid" />
+    <Property Name="_modifiedbyexternalparty_value" Type="Edm.Guid" />
+    <Property Name="coop_hr_position" Type="Edm.String" Unicode="false" />
+    <Property Name="coop_topparentcategory" Type="Edm.String" Unicode="false" />
+    <Property Name="coop_casesubmissioncomments" Type="Edm.String" Unicode="false" />
+    <Property Name="coop_comment" Type="Edm.Int32" />
+    <Property Name="coop_deliverynotification" Type="Edm.Int32" />
+    <Property Name="coop_cs" Type="Edm.String" Unicode="false" />
+    <Property Name="coop_hr_discount_missing" Type="Edm.String" Unicode="false" />
+    <Property Name="coop_tempnotification" Type="Edm.Int32" />
+    <Property Name="_accountid_value" Type="Edm.Guid" />
+    <Property Name="nextsla" Type="Edm.String" Unicode="false" />
+    <Property Name="coop_hr_email_work" Type="Edm.String" Unicode="false" />
+    <Property Name="coop_kross_claim_value_state" Type="Edm.Int32" />
+    <Property Name="coop_harkandidatenskttjnstenviajobylon" Type="Edm.Int32" />
+    <Property Name="coop_bs_claimstatus" Type="Edm.Int32" />
+    <Property Name="_owningteam_value" Type="Edm.Guid" />
+    <Property Name="coop_arrivaldate" Type="Edm.DateTimeOffset" />
+    <Property Name="entityimageid" Type="Edm.Guid" />
+    <Property Name="coop_contactperson" Type="Edm.String" Unicode="false" />
+    <Property Name="coop_counterparty" Type="Edm.String" Unicode="false" />
+    <Property Name="coop_hr_personalnumber" Type="Edm.String" Unicode="false" />
+    <Property Name="_slainvokedid_value" Type="Edm.Guid" />
+    <Property Name="coop_hr_rapporteringsstalle" Type="Edm.String" Unicode="false" />
+    <Property Name="coop_messagetosupplier" Type="Edm.Boolean" />
+    <Property Name="coop_pictureonthegoods" Type="Edm.Boolean" />
+    <Property Name="_coop_reporter_value" Type="Edm.Guid" />
+    <Property Name="coop_isspecialeditable" Type="Edm.Boolean" />
+    <Property Name="coop_sscc" Type="Edm.String" Unicode="false" />
+    <Property Name="coop_hr_contact_person" Type="Edm.String" Unicode="false" />
+    <Property Name="_kbarticleid_value" Type="Edm.Guid" />
+    <Property Name="_coop_webformsenderaccount_value" Type="Edm.Guid" />
+    <Property Name="coop_commentdepreciation" Type="Edm.Int32" />
+    <Property Name="coop_hr_company" Type="Edm.String" Unicode="false" />
+    <Property Name="_owningbusinessunit_value" Type="Edm.Guid" />
+    <Property Name="coop_ai_status" Type="Edm.Int32" />
+    <Property Name="coop_full_carrier_damaged" Type="Edm.Boolean" />
+    <Property Name="merged" Type="Edm.Boolean" />
+    <Property Name="coop_hr_desired_start_date" Type="Edm.DateTimeOffset" />
+    <Property Name="followuptaskcreated" Type="Edm.Boolean" />
+    <Property Name="timezoneruleversionnumber" Type="Edm.Int32" />
+    <Property Name="coop_case_key" Type="Edm.String" Unicode="false" />
+    <Property Name="coop_hr_titel" Type="Edm.String" Unicode="false" />
+    <Property Name="coop_claimvalue" Type="Edm.Int32" />
+    <Property Name="coop_closecasenotification" Type="Edm.Boolean" />
+    <Property Name="coop_hr_other_information" Type="Edm.String" Unicode="false" />
+    <Property Name="coop_hbokfnr" Type="Edm.String" Unicode="false" />
+    <Property Name="_coop_parentcase_value" Type="Edm.Guid" />
+    <Property Name="coop_expected_sol_date" Type="Edm.DateTimeOffset" />
+    <Property Name="coop_harkandidatenfttinformationomattdetkommer" Type="Edm.Int32" />
+    <Property Name="_entitlementid_value" Type="Edm.Guid" />
+    <Property Name="coop_everfresh_invoice_amount_date" Type="Edm.DateTimeOffset" />
+    <Property Name="coop_olderthan5days" Type="Edm.Boolean" />
+    <Property Name="_msdyn_iotalert_value" Type="Edm.Guid" />
+    <Property Name="coop_feedbackby" Type="Edm.Int32" />
+    <Property Name="coop_invoicenumber" Type="Edm.String" Unicode="false" />
+    <Property Name="actualserviceunits" Type="Edm.Int32" />
+    <Property Name="firstresponsesent" Type="Edm.Boolean" />
+    <Property Name="coop_depreciationpercent" Type="Edm.Int32" />
+    <Property Name="decremententitlementterm" Type="Edm.Boolean" />
+    <Property Name="coop_vadgllerdittrende" Type="Edm.Int32" />
+    <Property Name="coop_newcasenotification" Type="Edm.Boolean" />
+    <Property Name="coop_datedecisioncomplaintresponsible" Type="Edm.DateTimeOffset" />
+    <Property Name="routecase" Type="Edm.Boolean" />
+    <Property Name="exchangerate" Type="Edm.Decimal" Scale="Variable" />
+    <Property Name="coop_notes" Type="Edm.String" Unicode="false" />
+    <Property Name="coop_ateaflag" Type="Edm.Boolean" />
+    <Property Name="coop_storename" Type="Edm.String" Unicode="false" />
+    <Property Name="responseby" Type="Edm.DateTimeOffset" />
+    <Property Name="_contractid_value" Type="Edm.Guid" />
+    <Property Name="entityimage" Type="Edm.Binary" />
+    <Property Name="coop_lcdno" Type="Edm.String" Unicode="false" />
+    <Property Name="coop_actualdeliverydate" Type="Edm.DateTimeOffset" />
+    <Property Name="coop_cat_status" Type="Edm.Int32" />
+    <Property Name="prioritycode" Type="Edm.Int32" />
+    <Property Name="coop_isresovedcase" Type="Edm.Boolean" />
+    <Property Name="coop_hr_category" Type="Edm.Int32" />
+    <Property Name="coop_hr_enddate" Type="Edm.DateTimeOffset" />
+    <Property Name="checkemail" Type="Edm.Boolean" />
+    <Property Name="coop_caseattachment" Type="Edm.String" Unicode="false" />
+    <Property Name="_coop_caseteamid_value" Type="Edm.Guid" />
+    <Property Name="traversedpath" Type="Edm.String" Unicode="false" />
+    <Property Name="_createdby_value" Type="Edm.Guid" />
+    <Property Name="coop_ordernumberportal" Type="Edm.String" Unicode="false" />
+    <Property Name="_firstresponsebykpiid_value" Type="Edm.Guid" />
+    <Property Name="followupby" Type="Edm.DateTimeOffset" />
+    <Property Name="coop_newlycreatedfromemail" Type="Edm.Boolean" />
+    <Property Name="coop_lcd" Type="Edm.String" Unicode="false" />
+    <Property Name="coop_hr_employment_rate" Type="Edm.Int32" />
+    <Property Name="coop_descriptionwithouthtml" Type="Edm.String" Unicode="false" />
+    <Property Name="coop_counterpartylist" Type="Edm.Int32" />
+    <Property Name="coop_alerttrigger" Type="Edm.Boolean" />
+    <Property Name="_coop_contact_value" Type="Edm.Guid" />
+    <Property Name="coop_damaged_delivery" Type="Edm.Boolean" />
+    <Property Name="coop_category_cao_portal" Type="Edm.Int32" />
+    <Property Name="entityimage_url" Type="Edm.String" Unicode="false" />
+    <Property Name="coop_hr_contact_phone" Type="Edm.String" Unicode="false" />
+    <Property Name="_coop_deviationtype_id_value" Type="Edm.Guid" />
+    <Property Name="_parentcaseid_value" Type="Edm.Guid" />
+    <Property Name="coop_load_carrier_id" Type="Edm.String" Unicode="false" />
+    <Property Name="coop_terminal_location" Type="Edm.Int32" />
+    <Property Name="coop_othercommentsmasterdata" Type="Edm.String" Unicode="false" />
+    <Property Name="coop_scannadpaterminal" Type="Edm.Int32" />
+    <Property Name="blockedprofile" Type="Edm.Boolean" />
+    <Property Name="coop_resolution" Type="Edm.String" Unicode="false" />
+    <Property Name="isdecrementing" Type="Edm.Boolean" />
+    <Property Name="coop_notifieddeliverydate" Type="Edm.DateTimeOffset" />
+    <Property Name="coop_goodsreceived" Type="Edm.Boolean" />
+    <Property Name="coop_claimdate" Type="Edm.DateTimeOffset" />
+    <Property Name="coop_shippingnotenofonr" Type="Edm.String" Unicode="false" />
+    <Property Name="coop_hr_other_info" Type="Edm.String" Unicode="false" />
+    <Property Name="coop_deviationdescription" Type="Edm.String" Unicode="false" />
+    <Property Name="billedserviceunits" Type="Edm.Int32" />
+    <Property Name="coop_costreferencecoop" Type="Edm.Int32" />
+    <Property Name="processid" Type="Edm.Guid" />
+    <Property Name="_existingcase_value" Type="Edm.Guid" />
+    <Property Name="coop_statusmasterdata" Type="Edm.Int32" />
+    <Property Name="_customerid_value" Type="Edm.Guid" />
+    <Property Name="coop_invoiceflag" Type="Edm.Boolean" />
+    <Property Name="_transactioncurrencyid_value" Type="Edm.Guid" />
+    <Property Name="versionnumber" Type="Edm.Int64" />
+    <Property Name="_contractdetailid_value" Type="Edm.Guid" />
+    <Property Name="_coop_relatedstoreownerid_value" Type="Edm.Guid" />
+    <Property Name="coop_hr_end_date" Type="Edm.String" Unicode="false" />
+    <Property Name="_subjectid_value" Type="Edm.Guid" />
+    <Property Name="coop_klocaotype" Type="Edm.Boolean" />
+    <Property Name="coop_hr_selection_questions" Type="Edm.String" Unicode="false" />
+    <Property Name="_coop_previouscaseownerteam_value" Type="Edm.Guid" />
+    <Property Name="coop_bankproduct" Type="Edm.Int32" />
+    <Property Name="ticketnumber" Type="Edm.String" Unicode="false" />
+    <Property Name="_coop_everfreshorder_value" Type="Edm.Guid" />
+    <Property Name="coop_olderthan3days" Type="Edm.Boolean" />
+    <Property Name="coop_hr_medarbetarens_roll" Type="Edm.Int32" />
+    <Property Name="coop_everfresh_invoice_amount" Type="Edm.Decimal" Scale="Variable" />
+    <Property Name="coop_bs_deviation_bill" Type="Edm.Boolean" />
+    <Property Name="onholdtime" Type="Edm.Int32" />
+    <Property Name="createdon" Type="Edm.DateTimeOffset" />
+    <Property Name="coop_measure" Type="Edm.Int32" />
+    <Property Name="coop_transportor1" Type="Edm.Int32" />
+    <Property Name="coop_flow2" Type="Edm.Int32" />
+    <Property Name="_contactid_value" Type="Edm.Guid" />
+    <Property Name="activitiescomplete" Type="Edm.Boolean" />
+    <Property Name="coop_handlahemmaordernumber" Type="Edm.String" Unicode="false" />
+    <Property Name="coop_category_autocomplete" Type="Edm.String" Unicode="false" />
+    <Property Name="msdyn_casesurveyinviteurl" Type="Edm.String" Unicode="false" />
+    <Property Name="msdyn_precreateattachmentsid" Type="Edm.String" Unicode="false" />
+    <Property Name="coop_notreportedtocarrier" Type="Edm.Boolean" />
+    <Property Name="coop_kross_claim_value_date" Type="Edm.DateTimeOffset" />
+    <Property Name="casetypecode" Type="Edm.Int32" />
+    <Property Name="caseorigincode" Type="Edm.Int32" />
+    <Property Name="contractservicelevelcode" Type="Edm.Int32" />
+    <Property Name="coop_storenumber" Type="Edm.String" Unicode="false" />
+    <Property Name="coop_regiontransport" Type="Edm.Int32" />
+    <Property Name="utcconversiontimezonecode" Type="Edm.Int32" />
+    <Property Name="coop_reasons" Type="Edm.Int32" />
+    <Property Name="coop_case_cat_related" Type="Edm.Int32" />
+    <Property Name="coop_region" Type="Edm.Int32" />
+    <Property Name="coop_hr_start_date" Type="Edm.DateTimeOffset" />
+    <Property Name="modifiedon" Type="Edm.DateTimeOffset" />
+    <Property Name="coop_hr_salary" Type="Edm.String" Unicode="false" />
+    <Property Name="_coop_selectedcategory_value" Type="Edm.Guid" />
+    <Property Name="isescalated" Type="Edm.Boolean" />
+    <Property Name="title" Type="Edm.String" Unicode="false" />
+    <Property Name="numberofchildincidents" Type="Edm.Int32" />
+    <Property Name="_createdonbehalfby_value" Type="Edm.Guid" />
+    <Property Name="_ownerid_value" Type="Edm.Guid" />
+    <Property Name="coop_transport_cause" Type="Edm.Int32" />
+    <Property Name="coop_isarticleassociated" Type="Edm.Int32" />
+    <Property Name="_productid_value" Type="Edm.Guid" />
+    <Property Name="statecode" Type="Edm.Int32" />
+    <Property Name="coop_sentclaimvalue" Type="Edm.Date" />
+    <Property Name="coop_hr_employment_form" Type="Edm.Int32" />
+    <Property Name="influencescore" Type="Edm.Double" />
+    <Property Name="coop_otherexpense" Type="Edm.Decimal" Scale="Variable" />
+    <Property Name="coop_finance_complexity" Type="Edm.Int32" />
+    <Property Name="coop_storesupportcreditedshop" Type="Edm.Boolean" />
+    <Property Name="coop_fritext" Type="Edm.String" Unicode="false" />
+    <Property Name="coop_orsakskodtransportor" Type="Edm.Int32" />
+    <Property Name="coop_flow" Type="Edm.Int32" />
+    <Property Name="coop_soda_stream_quantity" Type="Edm.Int32" />
+    <Property Name="coop_descriptionportal" Type="Edm.String" Unicode="false" />
+    <Property Name="coop_terminal" Type="Edm.String" Unicode="false" />
+    <Property Name="coop_casemode" Type="Edm.String" Unicode="false" />
+    <Property Name="coop_categoryautocomplete" Type="Edm.String" Unicode="false" />
+    <Property Name="coop_kasearchstring" Type="Edm.String" Unicode="false" />
+    <Property Name="coop_olderthan7days" Type="Edm.Boolean" />
+    <Property Name="coop_deviationdescriptionen" Type="Edm.String" Unicode="false" />
+    <Property Name="coop_ateaticketnumber" Type="Edm.String" Unicode="false" />
+    <Property Name="coop_physicallysignedfreightdocument" Type="Edm.Boolean" />
+    <Property Name="coop_status" Type="Edm.Int32" />
+    <Property Name="messagetypecode" Type="Edm.Int32" />
+    <Property Name="_resolvebykpiid_value" Type="Edm.Guid" />
+    <Property Name="coop_portalsubmissionchecker" Type="Edm.String" Unicode="false" />
+    <Property Name="coop_lcdnumber" Type="Edm.Int32" />
+    <Property Name="_modifiedby_value" Type="Edm.Guid" />
+    <Property Name="coop_invoicerefno" Type="Edm.String" Unicode="false" />
+    <Property Name="_coop_relatedcaseid_value" Type="Edm.Guid" />
+    <Property Name="coop_hr_agreement" Type="Edm.String" Unicode="false" />
+    <Property Name="importsequencenumber" Type="Edm.Int32" />
+    <Property Name="coop_waitingperiodforcheckclosecase" Type="Edm.Int32" />
+    <Property Name="coop_goodsvalues" Type="Edm.Decimal" Scale="Variable" />
+    <Property Name="productserialnumber" Type="Edm.String" Unicode="false" />
+    <NavigationProperty Name="incident_msfp_surveyinvites" Type="Collection(mscrm.msfp_surveyinvite)" Partner="regardingobjectid_incident_msfp_surveyinvite" />
+    <NavigationProperty Name="incident_msfp_surveyresponses" Type="Collection(mscrm.msfp_surveyresponse)" Partner="regardingobjectid_incident_msfp_surveyresponse" />
+    <NavigationProperty Name="incident_li_inmails" Type="Collection(mscrm.li_inmail)" Partner="regardingobjectid_incident_li_inmail" />
+    <NavigationProperty Name="incident_li_messages" Type="Collection(mscrm.li_message)" Partner="regardingobjectid_incident_li_message" />
+    <NavigationProperty Name="incident_li_pointdrivepresentationvieweds" Type="Collection(mscrm.li_pointdrivepresentationviewed)" Partner="regardingobjectid_incident_li_pointdrivepresentationviewed" />
+    <NavigationProperty Name="slaid_sla" Type="mscrm.sla" Nullable="false" Partner="manualsla_cases">
+        <ReferentialConstraint Property="_slaid_value" ReferencedProperty="slaid" />
+    </NavigationProperty>
+    <NavigationProperty Name="KnowledgeBaseRecord_Incident" Type="Collection(mscrm.knowledgebaserecord)" Partner="KnowledgeBaseRecord_Incident" />
+    <NavigationProperty Name="Incident_Emails" Type="Collection(mscrm.email)" Partner="regardingobjectid_incident_email" />
+    <NavigationProperty Name="coop_Relationproducttocase" Type="mscrm.coop_relationproductcase" Nullable="false" Partner="coop_coop_relationproductcase_incident_Relationproducttocase">
+        <ReferentialConstraint Property="_coop_relationproducttocase_value" ReferencedProperty="coop_relationproductcaseid" />
+    </NavigationProperty>
+    <NavigationProperty Name="masterid" Type="mscrm.incident" Nullable="false" Partner="incident_master_incident">
+        <ReferentialConstraint Property="_masterid_value" ReferencedProperty="incidentid" />
+    </NavigationProperty>
+    <NavigationProperty Name="incident_master_incident" Type="Collection(mscrm.incident)" Partner="masterid" />
+    <NavigationProperty Name="parentcaseid" Type="mscrm.incident" Nullable="false" Partner="incident_parent_incident">
+        <ReferentialConstraint Property="_parentcaseid_value" ReferencedProperty="incidentid" />
+    </NavigationProperty>
+    <NavigationProperty Name="incident_parent_incident" Type="Collection(mscrm.incident)" Partner="parentcaseid" />
+    <NavigationProperty Name="coop_webformsenderaccount" Type="mscrm.account" Nullable="false" Partner="coop_account_incident_webformsenderaccount">
+        <ReferentialConstraint Property="_coop_webformsenderaccount_value" ReferencedProperty="accountid" />
+    </NavigationProperty>
+    <NavigationProperty Name="coop_SelectedCategory" Type="mscrm.category" Nullable="false" Partner="coop_category_incident_SelectedCategory">
+        <ReferentialConstraint Property="_coop_selectedcategory_value" ReferencedProperty="categoryid" />
+    </NavigationProperty>
+    <NavigationProperty Name="coop_Reporter" Type="mscrm.contact" Nullable="false" Partner="coop_contact_incident_Reporter">
+        <ReferentialConstraint Property="_coop_reporter_value" ReferencedProperty="contactid" />
+    </NavigationProperty>
+    <NavigationProperty Name="coop_incident_coop_agentactivities_relatedcase" Type="Collection(mscrm.coop_agentactivities)" Partner="coop_relatedcase" />
+    <NavigationProperty Name="coop_incident_coop_bossnotification_RelatedCase" Type="Collection(mscrm.coop_bossnotification)" Partner="coop_relatedcase" />
+    <NavigationProperty Name="coop_incident_coop_notification_RelatedCase" Type="Collection(mscrm.coop_notification)" Partner="coop_RelatedCase" />
+    <NavigationProperty Name="coop_ParentCase" Type="mscrm.incident" Nullable="false" Partner="coop_incident_incident_ParentCase">
+        <ReferentialConstraint Property="_coop_parentcase_value" ReferencedProperty="incidentid" />
+    </NavigationProperty>
+    <NavigationProperty Name="coop_incident_incident_ParentCase" Type="Collection(mscrm.incident)" Partner="coop_ParentCase" />
+    <NavigationProperty Name="coop_RegardingStoreId" Type="mscrm.account" Nullable="false" Partner="coop_Regarding_Store_Case">
+        <ReferentialConstraint Property="_coop_regardingstoreid_value" ReferencedProperty="accountid" />
+    </NavigationProperty>
+    <NavigationProperty Name="coop_relationproductcase_incident" Type="Collection(mscrm.coop_relationproductcase)" Partner="coop_Case" />
+    <NavigationProperty Name="coop_PreviousCaseOwner" Type="mscrm.systemuser" Nullable="false" Partner="coop_systemuser_incident_PreviousCaseOwner">
+        <ReferentialConstraint Property="_coop_previouscaseowner_value" ReferencedProperty="systemuserid" />
+    </NavigationProperty>
+    <NavigationProperty Name="coop_previouscaseownerteam" Type="mscrm.team" Nullable="false" Partner="coop_team_incident_previouscaseownerteam">
+        <ReferentialConstraint Property="_coop_previouscaseownerteam_value" ReferencedProperty="teamid" />
+    </NavigationProperty>
+    <NavigationProperty Name="existingcase" Type="mscrm.incident" Nullable="false" Partner="incident_existingcase">
+        <ReferentialConstraint Property="_existingcase_value" ReferencedProperty="incidentid" />
+    </NavigationProperty>
+    <NavigationProperty Name="incident_existingcase" Type="Collection(mscrm.incident)" Partner="existingcase" />
+    <NavigationProperty Name="Incident_MailboxTrackingFolder" Type="Collection(mscrm.mailboxtrackingfolder)" Partner="regardingobjectid_incident" />
+    <NavigationProperty Name="OriginatingCase_Lead" Type="Collection(mscrm.lead)" Partner="originatingcaseid" />
+    <NavigationProperty Name="modifiedonbehalfby" Type="mscrm.systemuser" Nullable="false" Partner="lk_incidentbase_modifiedonbehalfby">
+        <ReferentialConstraint Property="_modifiedonbehalfby_value" ReferencedProperty="systemuserid" />
+    </NavigationProperty>
+    <NavigationProperty Name="slainvokedid_sla" Type="mscrm.sla" Nullable="false" Partner="sla_cases">
+        <ReferentialConstraint Property="_slainvokedid_value" ReferencedProperty="slaid" />
+    </NavigationProperty>
+    <NavigationProperty Name="Incident_SocialActivities" Type="Collection(mscrm.socialactivity)" Partner="regardingobjectid_incident_socialactivity" />
+    <NavigationProperty Name="firstresponsebykpiid" Type="mscrm.slakpiinstance" Nullable="false" Partner="slakpiinstance_incident_firstresponsebykpi">
+        <ReferentialConstraint Property="_firstresponsebykpiid_value" ReferencedProperty="slakpiinstanceid" />
+    </NavigationProperty>
+    <NavigationProperty Name="productid" Type="mscrm.product" Nullable="false" Partner="product_incidents">
+        <ReferentialConstraint Property="_productid_value" ReferencedProperty="productid" />
+    </NavigationProperty>
+    <NavigationProperty Name="incident_actioncard" Type="Collection(mscrm.actioncard)" Partner="regardingobjectid_incident_actioncard" />
+    <NavigationProperty Name="Incident_Appointments" Type="Collection(mscrm.appointment)" Partner="regardingobjectid_incident_appointment" />
+    <NavigationProperty Name="incident_connections2" Type="Collection(mscrm.connection)" Partner="record2id_incident" />
+    <NavigationProperty Name="Incident_ServiceAppointments" Type="Collection(mscrm.serviceappointment)" Partner="regardingobjectid_incident_serviceappointment" />
+    <NavigationProperty Name="owningteam" Type="mscrm.team" Nullable="false" Partner="team_incidents">
+        <ReferentialConstraint Property="_owningteam_value" ReferencedProperty="teamid" />
+    </NavigationProperty>
+    <NavigationProperty Name="contractdetailid" Type="mscrm.contractdetail" Nullable="false" Partner="contract_detail_cases">
+        <ReferentialConstraint Property="_contractdetailid_value" ReferencedProperty="contractdetailid" />
+    </NavigationProperty>
+    <NavigationProperty Name="Incident_QueueItem" Type="Collection(mscrm.queueitem)" Partner="objectid_incident" />
+    <NavigationProperty Name="incident_phonetocaseprocess" Type="Collection(mscrm.phonetocaseprocess)" Partner="incidentid" />
+    <NavigationProperty Name="Incident_Phonecalls" Type="Collection(mscrm.phonecall)" Partner="regardingobjectid_incident_phonecall" />
+    <NavigationProperty Name="incident_connections1" Type="Collection(mscrm.connection)" Partner="record1id_incident" />
+    <NavigationProperty Name="owningbusinessunit" Type="mscrm.businessunit" Nullable="false" Partner="business_unit_incidents">
+        <ReferentialConstraint Property="_owningbusinessunit_value" ReferencedProperty="businessunitid" />
+    </NavigationProperty>
+    <NavigationProperty Name="customerid_contact" Type="mscrm.contact" Nullable="false" Partner="incident_customer_contacts">
+        <ReferentialConstraint Property="_customerid_value" ReferencedProperty="contactid" />
+    </NavigationProperty>
+    <NavigationProperty Name="entitlementid" Type="mscrm.entitlement" Nullable="false" Partner="entitlement_cases">
+        <ReferentialConstraint Property="_entitlementid_value" ReferencedProperty="entitlementid" />
+    </NavigationProperty>
+    <NavigationProperty Name="Incident_RecurringAppointmentMasters" Type="Collection(mscrm.recurringappointmentmaster)" Partner="regardingobjectid_incident_recurringappointmentmaster" />
+    <NavigationProperty Name="socialprofileid" Type="mscrm.socialprofile" Nullable="false" Partner="socialprofile_cases">
+        <ReferentialConstraint Property="_socialprofileid_value" ReferencedProperty="socialprofileid" />
+    </NavigationProperty>
+    <NavigationProperty Name="createdby" Type="mscrm.systemuser" Nullable="false" Partner="lk_incidentbase_createdby">
+        <ReferentialConstraint Property="_createdby_value" ReferencedProperty="systemuserid" />
+    </NavigationProperty>
+    <NavigationProperty Name="customerid_account" Type="mscrm.account" Nullable="false" Partner="incident_customer_accounts">
+        <ReferentialConstraint Property="_customerid_value" ReferencedProperty="accountid" />
+    </NavigationProperty>
+    <NavigationProperty Name="owninguser" Type="mscrm.systemuser" Nullable="false" Partner="system_user_incidents">
+        <ReferentialConstraint Property="_owninguser_value" ReferencedProperty="systemuserid" />
+    </NavigationProperty>
+    <NavigationProperty Name="resolvebykpiid" Type="mscrm.slakpiinstance" Nullable="false" Partner="slakpiinstance_incident_resolvebykpi">
+        <ReferentialConstraint Property="_resolvebykpiid_value" ReferencedProperty="slakpiinstanceid" />
+    </NavigationProperty>
+    <NavigationProperty Name="primarycontactid" Type="mscrm.contact" Nullable="false" Partner="contact_as_primary_contact">
+        <ReferentialConstraint Property="_primarycontactid_value" ReferencedProperty="contactid" />
+    </NavigationProperty>
+    <NavigationProperty Name="responsiblecontactid" Type="mscrm.contact" Nullable="false" Partner="contact_as_responsible_contact" />
+    <NavigationProperty Name="createdonbehalfby" Type="mscrm.systemuser" Nullable="false" Partner="lk_incidentbase_createdonbehalfby">
+        <ReferentialConstraint Property="_createdonbehalfby_value" ReferencedProperty="systemuserid" />
+    </NavigationProperty>
+    <NavigationProperty Name="Incident_Letters" Type="Collection(mscrm.letter)" Partner="regardingobjectid_incident_letter" />
+    <NavigationProperty Name="Incident_SyncErrors" Type="Collection(mscrm.syncerror)" Partner="regardingobjectid_incident_syncerror" />
+    <NavigationProperty Name="modifiedby" Type="mscrm.systemuser" Nullable="false" Partner="lk_incidentbase_modifiedby">
+        <ReferentialConstraint Property="_modifiedby_value" ReferencedProperty="systemuserid" />
+    </NavigationProperty>
+    <NavigationProperty Name="Incident_Faxes" Type="Collection(mscrm.fax)" Partner="regardingobjectid_incident_fax" />
+    <NavigationProperty Name="contractid" Type="mscrm.contract" Nullable="false" Partner="contract_cases">
+        <ReferentialConstraint Property="_contractid_value" ReferencedProperty="contractid" />
+    </NavigationProperty>
+    <NavigationProperty Name="knowledgearticle_incidents" Type="Collection(mscrm.knowledgearticleincident)" Partner="incidentid" />
+    <NavigationProperty Name="Incident_Tasks" Type="Collection(mscrm.task)" Partner="regardingobjectid_incident_task" />
+    <NavigationProperty Name="kbarticleid" Type="mscrm.kbarticle" Nullable="false" Partner="kbarticle_incidents">
+        <ReferentialConstraint Property="_kbarticleid_value" ReferencedProperty="kbarticleid" />
+    </NavigationProperty>
+    <NavigationProperty Name="coop_incident_coop_flowtaxonomy" Type="Collection(mscrm.coop_flowtaxonomy)" Partner="coop_flowtaxonomy" />
+    <NavigationProperty Name="coop_relatedcaseuniqueid" Type="mscrm.incident" Nullable="false" Partner="coop_incident_incident">
+        <ReferentialConstraint Property="_coop_relatedcaseuniqueid_value" ReferencedProperty="incidentid" />
+    </NavigationProperty>
+    <NavigationProperty Name="coop_incident_incident" Type="Collection(mscrm.incident)" Partner="coop_relatedcaseuniqueid" />
+    <NavigationProperty Name="coop_incident_coop_deleteconfig" Type="Collection(mscrm.coop_deleteconfig)" Partner="coop_caseid" />
+    <NavigationProperty Name="incident_OpportunityCloses" Type="Collection(mscrm.opportunityclose)" Partner="regardingobjectid_incident_opportunityclose" />
+    <NavigationProperty Name="incident_OrderCloses" Type="Collection(mscrm.orderclose)" Partner="regardingobjectid_incident_orderclose" />
+    <NavigationProperty Name="incident_QuoteCloses" Type="Collection(mscrm.quoteclose)" Partner="regardingobjectid_incident_quoteclose" />
+    <NavigationProperty Name="bpf_incident_msdyn_iottocaseprocess" Type="Collection(mscrm.msdyn_iottocaseprocess)" Partner="bpf_incidentid" />
+    <NavigationProperty Name="msdyn_IoTAlert" Type="mscrm.msdyn_iotalert" Nullable="false" Partner="msdyn_msdyn_iotalert_incident_IoTAlert">
+        <ReferentialConstraint Property="_msdyn_iotalert_value" ReferencedProperty="msdyn_iotalertid" />
+    </NavigationProperty>
+    <NavigationProperty Name="msdyn_incident_msdyn_iotalert_Case" Type="Collection(mscrm.msdyn_iotalert)" Partner="msdyn_Case" />
+    <NavigationProperty Name="msdyn_incident_msdyn_customerasset" Type="Collection(mscrm.msdyn_customerasset)" Partner="msdyn_incident_msdyn_customerasset" />
+    <NavigationProperty Name="incident_msfp_alerts" Type="Collection(mscrm.msfp_alert)" Partner="regardingobjectid_incident_msfp_alert" />
+    <NavigationProperty Name="msdyn_incident_feedback_context" Type="Collection(mscrm.feedback)" Partner="msdyn_ContextObjectId_incident" />
+    <NavigationProperty Name="msdyn_incident_msdyn_casetopic_incident_incidentid" Type="Collection(mscrm.msdyn_casetopic_incident)" Partner="msdyn_incidentid" />
+    <NavigationProperty Name="msdyn_incident_msdyn_federatedarticleincident_IncidentId" Type="Collection(mscrm.msdyn_federatedarticleincident)" Partner="msdyn_incidentid" />
+    <NavigationProperty Name="msdyn_incident_msdyn_aicontactsuggestion_sourcerecord" Type="Collection(mscrm.msdyn_aicontactsuggestion)" Partner="msdyn_sourcerecord_Incident_incident" />
+    <NavigationProperty Name="coop_deviationsubtype_id" Type="mscrm.coop_deviationtype" Nullable="false" Partner="coop_coop_deviationtype_incident_deviationsubtype_id">
+        <ReferentialConstraint Property="_coop_deviationsubtype_id_value" ReferencedProperty="coop_deviationtypeid" />
+    </NavigationProperty>
+    <NavigationProperty Name="coop_deviationtype_id" Type="mscrm.coop_deviationtype" Nullable="false" Partner="coop_coop_deviationtype_incident_deviationtype_id">
+        <ReferentialConstraint Property="_coop_deviationtype_id_value" ReferencedProperty="coop_deviationtypeid" />
+    </NavigationProperty>
+    <NavigationProperty Name="coop_incident_coop_scanning_Case" Type="Collection(mscrm.coop_scanning)" Partner="coop_incidentid" />
+    <NavigationProperty Name="coop_LDCId" Type="mscrm.coop_recordnumbercounter" Nullable="false" Partner="coop_coop_recordnumbercounter_incident">
+        <ReferentialConstraint Property="_coop_ldcid_value" ReferencedProperty="coop_recordnumbercounterid" />
+    </NavigationProperty>
+    <NavigationProperty Name="coop_CaseTeamId" Type="mscrm.team" Nullable="false" Partner="coop_team_incident">
+        <ReferentialConstraint Property="_coop_caseteamid_value" ReferencedProperty="teamid" />
+    </NavigationProperty>
+    <NavigationProperty Name="incident_chats" Type="Collection(mscrm.chat)" Partner="regardingobjectid_incident_chat" />
+    <NavigationProperty Name="msdyn_swarm_incident" Type="Collection(mscrm.msdyn_swarm)" Partner="msdyn_swarmrelatedrecordid_incident" />
+    <NavigationProperty Name="incident_Posts" Type="Collection(mscrm.post)" Partner="regardingobjectid_incident" />
+    <NavigationProperty Name="coop_incident_coop_bnrdetail" Type="Collection(mscrm.coop_bnrdetail)" Partner="coop_CaseId" />
+    <NavigationProperty Name="incident_adx_alertsubscriptions" Type="Collection(mscrm.adx_alertsubscription)" Partner="regardingobjectid_incident_adx_alertsubscription" />
+    <NavigationProperty Name="incident_adx_inviteredemptions" Type="Collection(mscrm.adx_inviteredemption)" Partner="regardingobjectid_incident_adx_inviteredemption" />
+    <NavigationProperty Name="incident_adx_portalcomments" Type="Collection(mscrm.adx_portalcomment)" Partner="regardingobjectid_incident_adx_portalcomment" />
+    <NavigationProperty Name="incident_SharePointDocumentLocations" Type="Collection(mscrm.sharepointdocumentlocation)" Partner="regardingobjectid_incident" />
+    <NavigationProperty Name="coop_webformsender" Type="mscrm.contact" Nullable="false" Partner="coop_contact_incident_webformsender">
+        <ReferentialConstraint Property="_coop_webformsender_value" ReferencedProperty="contactid" />
+    </NavigationProperty>
+    <NavigationProperty Name="coop_incident_email_CaseforBSPortalEmail" Type="Collection(mscrm.email)" Partner="coop_CaseforBSPortalEmail_Email" />
+    <NavigationProperty Name="incident_msdyn_ocliveworkitems" Type="Collection(mscrm.msdyn_ocliveworkitem)" Partner="regardingobjectid_incident_msdyn_ocliveworkitem" />
+    <NavigationProperty Name="incident_msdyn_ocsessions" Type="Collection(mscrm.msdyn_ocsession)" Partner="regardingobjectid_incident_msdyn_ocsession" />
+    <NavigationProperty Name="msdyn_relatedentity_msdyn_entityattachment" Type="Collection(mscrm.msdyn_entityattachment)" Partner="msdyn_relatedentity" />
+    <NavigationProperty Name="incident_msdyn_ocoutboundmessages" Type="Collection(mscrm.msdyn_ocoutboundmessage)" Partner="regardingobjectid_incident_msdyn_ocoutboundmessage" />
+    <NavigationProperty Name="incident_msdyn_copilottranscripts" Type="Collection(mscrm.msdyn_copilottranscript)" Partner="regardingobjectid_incident_msdyn_copilottranscript" />
+    <NavigationProperty Name="coop_RelatedCaseId" Type="mscrm.incident" Nullable="false" Partner="coop_transport_incident">
+        <ReferentialConstraint Property="_coop_relatedcaseid_value" ReferencedProperty="incidentid" />
+    </NavigationProperty>
+    <NavigationProperty Name="coop_transport_incident" Type="Collection(mscrm.incident)" Partner="coop_RelatedCaseId" />
+    <NavigationProperty Name="msdyn_incident_msdyn_caseenrichment_caseid" Type="Collection(mscrm.msdyn_caseenrichment)" Partner="msdyn_caseid" />
+    <NavigationProperty Name="msdyn_incident_msdyn_casesuggestion_suggestedentity" Type="Collection(mscrm.msdyn_casesuggestion)" Partner="msdyn_suggestedentity" />
+    <NavigationProperty Name="msdyn_incident_msdyn_casesuggestionrequestpayload_caseid" Type="Collection(mscrm.msdyn_casesuggestionrequestpayload)" Partner="msdyn_caseid" />
+    <NavigationProperty Name="msdyn_incident_msdyn_suggestionrequestpayload" Type="Collection(mscrm.msdyn_suggestionrequestpayload)" Partner="msdyn_suggestionfor_incident" />
+    <NavigationProperty Name="msdyn_incident_msdyn_suggestioninteraction_msdyn_suggestedentity" Type="Collection(mscrm.msdyn_suggestioninteraction)" Partner="msdyn_suggestedentity_incident" />
+    <NavigationProperty Name="msdyn_incident_msdyn_suggestioninteraction_msdyn_suggestionfor" Type="Collection(mscrm.msdyn_suggestioninteraction)" Partner="msdyn_suggestionfor_incident" />
+    <NavigationProperty Name="incident_msdyn_comments" Type="Collection(mscrm.msdyn_comment)" Partner="regardingobjectid_incident_msdyn_comment" />
+    <NavigationProperty Name="msdyn_incident_msdyn_originatingqueue_createdincidentid" Type="Collection(mscrm.msdyn_originatingqueue)" Partner="msdyn_createdincidentid" />
+    <NavigationProperty Name="msdyn_incident_msdyn_ocliveworkitem" Type="Collection(mscrm.msdyn_ocliveworkitem)" Partner="msdyn_IssueId_msdyn_ocliveworkitem" />
+    <NavigationProperty Name="coop_Contact" Type="mscrm.contact" Nullable="false" Partner="coop_contact_incident_Contact">
+        <ReferentialConstraint Property="_coop_contact_value" ReferencedProperty="contactid" />
+    </NavigationProperty>
+    <NavigationProperty Name="coop_capintegration_case_id_incident" Type="Collection(mscrm.coop_capintegration)" Partner="coop_case_id" />
+    <NavigationProperty Name="incident_activity_parties" Type="Collection(mscrm.activityparty)" Partner="partyid_incident" />
+    <NavigationProperty Name="Incident_AsyncOperations" Type="Collection(mscrm.asyncoperation)" Partner="regardingobjectid_incident" />
+    <NavigationProperty Name="Incident_BulkDeleteFailures" Type="Collection(mscrm.bulkdeletefailure)" Partner="regardingobjectid_incident" />
+    <NavigationProperty Name="Incident_DuplicateBaseRecord" Type="Collection(mscrm.duplicaterecord)" Partner="baserecordid_incident" />
+    <NavigationProperty Name="Incident_DuplicateMatchingRecord" Type="Collection(mscrm.duplicaterecord)" Partner="duplicaterecordid_incident" />
+    <NavigationProperty Name="Incident_IncidentResolutions" Type="Collection(mscrm.incidentresolution)" Partner="incidentid" />
+    <NavigationProperty Name="incident_PostFollows" Type="Collection(mscrm.postfollow)" Partner="regardingobjectid_incident" />
+    <NavigationProperty Name="incident_PostRegardings" Type="Collection(mscrm.postregarding)" Partner="regardingobjectid_incident" />
+    <NavigationProperty Name="incident_principalobjectattributeaccess" Type="Collection(mscrm.principalobjectattributeaccess)" Partner="objectid_incident" />
+    <NavigationProperty Name="Incident_ProcessSessions" Type="Collection(mscrm.processsession)" Partner="regardingobjectid_incident" />
+    <NavigationProperty Name="Incident_ActivityPointers" Type="Collection(mscrm.activitypointer)" Partner="regardingobjectid_incident" />
+    <NavigationProperty Name="slakpiinstance_incident" Type="Collection(mscrm.slakpiinstance)" Partner="regarding" />
+    <NavigationProperty Name="stageid_processstage" Type="mscrm.processstage" Nullable="false" Partner="processstage_incident">
+        <ReferentialConstraint Property="stageid" ReferencedProperty="processstageid" />
+    </NavigationProperty>
+    <NavigationProperty Name="subjectid" Type="mscrm.subject" Nullable="false" Partner="subject_incidents">
+        <ReferentialConstraint Property="_subjectid_value" ReferencedProperty="subjectid" />
+    </NavigationProperty>
+    <NavigationProperty Name="transactioncurrencyid" Type="mscrm.transactioncurrency" Nullable="false" Partner="TransactionCurrency_Incident">
+        <ReferentialConstraint Property="_transactioncurrencyid_value" ReferencedProperty="transactioncurrencyid" />
+    </NavigationProperty>
+    <NavigationProperty Name="ownerid" Type="mscrm.principal" Nullable="false" Partner="owner_incidents">
+        <ReferentialConstraint Property="_ownerid_value" ReferencedProperty="ownerid" />
+    </NavigationProperty>
+    <NavigationProperty Name="Incident_Annotation" Type="Collection(mscrm.annotation)" Partner="objectid_incident" />
+    <NavigationProperty Name="coop_RelatedStoreOwnerId" Type="mscrm.coop_storeowner" Nullable="false" Partner="coop_coop_storeowner_incident">
+        <ReferentialConstraint Property="_coop_relatedstoreownerid_value" ReferencedProperty="coop_storeownerid" />
+    </NavigationProperty>
+    <NavigationProperty Name="msdyn_nextaction_regarding_incident" Type="Collection(mscrm.msdyn_nextaction)" Partner="msdyn_regarding" />
+    <NavigationProperty Name="msdyn_timetracker_regardingentity_Incident" Type="Collection(mscrm.msdyn_timetracker)" Partner="msdyn_regardingentity" />
+    <NavigationProperty Name="coop_everfresharticle_incident_Incident" Type="Collection(mscrm.coop_everfresharticle)" Partner="coop_incident" />
+    <NavigationProperty Name="coop_everfreshorder" Type="mscrm.coop_everfreshorder" Nullable="false" Partner="coop_incident_everfreshorder_coop_everfreshord">
+        <ReferentialConstraint Property="_coop_everfreshorder_value" ReferencedProperty="coop_everfreshorderid" />
+    </NavigationProperty>
+    <NavigationProperty Name="msdyn_incident_msdyn_intententity_objectid" Type="Collection(mscrm.msdyn_intententity)" Partner="msdyn_objectid_incident" />
+    <NavigationProperty Name="bpf_incident_coop_transportbusinessprocess" Type="Collection(mscrm.coop_transportbusinessprocess)" Partner="bpf_incidentid" />
+</EntityType>
