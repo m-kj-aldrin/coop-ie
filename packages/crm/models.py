@@ -1,8 +1,12 @@
 from typing import Generic, TypeVar
 from pydantic import BaseModel, field_validator, Field
+from packages.crm.types import SubjectType
 from packages.utils.html_parser import IncidentHtmlDescriptionParser
 from dataclasses import asdict, dataclass
 from typing import Any
+from typing import Optional
+from datetime import datetime
+from app.logger import logger
 
 T = TypeVar("T")
 
@@ -27,6 +31,22 @@ class Incident(BaseModel):
     @classmethod
     def parse_html_description(cls, value: str | None) -> str | None:
         """Parse HTML description using IncidentHtmlDescriptionParser."""
+        logger.info(f"Parsing HTML description: {value}")
+        if value is None:
+            return None
+        return IncidentHtmlDescriptionParser.parse_text(value)
+
+
+class CreationFailureIncident(BaseModel):
+    ticketnumber: str
+    incidentid: str
+    description: str
+
+    @field_validator("description", mode="after")
+    @classmethod
+    def parse_html_description(cls, value: str | None) -> str | None:
+        """Parse HTML description using IncidentHtmlDescriptionParser."""
+        logger.debug(f"Parsing HTML description: {value}")
         if value is None:
             return None
         return IncidentHtmlDescriptionParser.parse_text(value)
@@ -52,3 +72,13 @@ class Cookie:
     @classmethod
     def from_json(cls, data: dict[str, Any]) -> "Cookie":
         return cls(**data)
+
+
+@dataclass
+class IncidentData:
+    description: Optional[str] = None
+    coop_resolvedon: Optional[datetime] = None
+    coop_closecasenotification: Optional[bool] = None
+    coop_resolution: Optional[str] = None
+    title: Optional[str] = None
+    subject: Optional[SubjectType] = None
