@@ -30,7 +30,20 @@ class IncidentHtmlDescriptionParser(HTMLParser):
         instance.in_warning_message = False
         instance.current_line = []
         instance.feed(text)
-        return " ".join(instance.text)
+        return "\n".join(instance.text)  # Join with newlines instead of spaces
+
+    @override
+    def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+        # Add newlines before certain elements
+        if tag in ['h1', 'h2', 'li', 'p']:
+            self.text.append('')  # Add empty line before these elements
+
+    @override
+    def handle_endtag(self, tag: str) -> None:
+        # Add newlines after certain elements
+        if tag in ['h1', 'h2', 'li', 'p']:
+            if self.text and self.text[-1]:  # If there's text and it's not empty
+                self.text.append('')  # Add empty line after these elements
 
     @override
     def handle_data(self, data: str):
@@ -41,9 +54,7 @@ class IncidentHtmlDescriptionParser(HTMLParser):
             self.in_warning_message = True
             self.current_line = []
 
-            # If this contains a bracket, find where it starts
             if "[" in text:
-                # Split at the bracket and keep any text before it
                 parts = text.split("[", 1)
                 if parts[0].strip():
                     self.text.append(parts[0].strip())
@@ -55,11 +66,9 @@ class IncidentHtmlDescriptionParser(HTMLParser):
             if "]" in text:
                 self.skip_until_closing_bracket = False
                 self.in_warning_message = False
-                # Get text after the closing bracket if any
                 parts = text.split("]", 1)
                 if len(parts) > 1 and parts[1].strip():
                     cleaned_text = parts[1].strip()
-                    # Make sure the cleaned text isn't part of the warning message
                     if not any(
                         x in cleaned_text
                         for x in ["Learn why this is important", "https://aka.ms/"]
@@ -73,11 +82,9 @@ class IncidentHtmlDescriptionParser(HTMLParser):
         if self.skip_until_closing_bracket:
             if "]" in text:
                 self.skip_until_closing_bracket = False
-                # If there's text after the closing bracket, keep it
                 parts = text.split("]", 1)
                 if len(parts) > 1 and parts[1].strip():
                     cleaned_text = parts[1].strip()
-                    # Make sure the cleaned text isn't part of the warning message
                     if not any(
                         x in cleaned_text
                         for x in ["Learn why this is important", "https://aka.ms/"]
@@ -92,7 +99,12 @@ class IncidentHtmlDescriptionParser(HTMLParser):
             and not text.startswith("<!--")
             and not text.endswith("-->")
         ):
-            self.text.append(text)
+            # Format key-value pairs with colons
+            if ": " in text and not text.startswith("From:") and not text.startswith("Sent:"):
+                key, value = text.split(": ", 1)
+                self.text.append(f"{key}: {value}")
+            else:
+                self.text.append(text)
 
     @override
     def handle_comment(self, data: str):

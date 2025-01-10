@@ -46,7 +46,7 @@ class CreationFailureIncident(BaseModel):
     @classmethod
     def parse_html_description(cls, value: str | None) -> str | None:
         """Parse HTML description using IncidentHtmlDescriptionParser."""
-        logger.debug(f"Parsing HTML description: {value}")
+        # logger.debug(f"Parsing HTML description: {value}")
         if value is None:
             return None
         return IncidentHtmlDescriptionParser.parse_text(value)
@@ -82,3 +82,33 @@ class IncidentData:
     coop_resolution: Optional[str] = None
     title: Optional[str] = None
     subject: Optional[SubjectType] = None
+
+
+# from dataclasses import dataclass
+
+
+@dataclass
+class creation_failure:
+    """Data model for customer incidents.
+
+    Attributes:
+        Orsak: The reason for the incident
+        Personnummer: Customer's personal identification number
+        Ansökningsdatum: Date of application
+        Kanal: Channel used for the application
+        Butiksnummer: Store number where the incident occurred
+        Kvittonummer: Receipt number for the transaction
+        Ordernummer: Order number related to the incident
+        Cas: Case number for the incident
+        Epost: Customer's email address
+    """
+
+    Orsak: str
+    Personnummer: str
+    Ansökningsdatum: str
+    Kanal: str
+    Butiksnummer: str
+    Kvittonummer: str
+    Ordernummer: str
+    CAS: str
+    Epost: str
