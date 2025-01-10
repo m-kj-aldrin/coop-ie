@@ -47,14 +47,15 @@ assication_id_map = {
     "östra": "5fa45f7dfc2d0f4641f54cb3",
 }
 
+
 def create_member_payload(kim_customer_id: str, channel: str) -> dict[str, Any]:
     """
     Create the payload for member creation request.
-    
+
     Args:
         kim_customer_id: The KIM customer ID
         channel: The channel through which the membership is being created
-        
+
     Returns:
         Dictionary containing the properly formatted payload
     """
@@ -64,19 +65,19 @@ def create_member_payload(kim_customer_id: str, channel: str) -> dict[str, Any]:
         "kimCustomerId": kim_customer_id,
         "entryCode": "BUTPG",
         "channel": channel,
-        "associationId": assication_id_map['östra'],
+        "associationId": assication_id_map["östra"],
         "creationType": "CreateMembershipWithKimCustomerId",
         "storeId": "",
         "receiptNumber": "",
-        "preventHouseholdCreation": False
+        "preventHouseholdCreation": False,
     }
-    
+
     payload = {
         "Payload": json.dumps(payload_data),
         "RelativeUrl": "memberships",
         "Method": "POST",
     }
-    
+
     logger.debug(f"Creating member payload: {json.dumps(payload, indent=2)}")
     return payload
 
@@ -213,14 +214,10 @@ class CustomerSuccessResponse(BaseModel):
     lastName: str
     birthDate: str
     name: str
-    addresses: list
+    addresses: list[CustomerAddress]
     kimCustomerId: int
     role: str
     email: str
-
-
-class CustomerEmptyResponse(BaseModel):
-    items: list
 
 
 class CustomerErrorResponse(BaseModel):
@@ -233,9 +230,7 @@ class CustomerErrorResponse(BaseModel):
 
 class ActionDataResponse(BaseModel):
     ResponseStatus: int
-    Response: Union[
-        CustomerSuccessResponse, CustomerEmptyResponse, CustomerErrorResponse
-    ]
+    Response: Union[CustomerSuccessResponse, CustomerErrorResponse]
 
     model_config = {
         "json_schema_extra": {
@@ -243,7 +238,7 @@ class ActionDataResponse(BaseModel):
                 "property_name": "type",
                 "mapping": {
                     "physical-person": CustomerSuccessResponse,
-                }
+                },
             }
         }
     }
@@ -254,24 +249,23 @@ class ActionDataResponse(BaseModel):
         print(f"Response type: {type(self.Response)}")
         print(f"Response data: {self.Response}")
         return (
-            self.ResponseStatus == 200 
+            self.ResponseStatus == 200
             and isinstance(self.Response, CustomerSuccessResponse)
-            and not hasattr(self.Response, 'mmId')
+            and not hasattr(self.Response, "mmId")
         )
 
     def is_paid_member(self) -> bool:
         """Case 2: Customer exists and has paid (status 200, CustomerSuccessResponse with mmId)"""
         return (
-            self.ResponseStatus == 200 
+            self.ResponseStatus == 200
             and isinstance(self.Response, CustomerSuccessResponse)
-            and hasattr(self.Response, 'mmId')
+            and hasattr(self.Response, "mmId")
         )
 
     def is_not_customer(self) -> bool:
         """Case 3: Not a customer (status 404 or CustomerErrorResponse)"""
-        return (
-            self.ResponseStatus == 404 
-            or isinstance(self.Response, CustomerErrorResponse)
+        return self.ResponseStatus == 404 or isinstance(
+            self.Response, CustomerErrorResponse
         )
 
     def get_kim_customer_id(self) -> int:
@@ -279,9 +273,13 @@ class ActionDataResponse(BaseModel):
         print(f"\nDEBUG - get_kim_customer_id:")
         print(f"Response type: {type(self.Response)}")
         print(f"Response: {self.Response}")
-        print(f"Is CustomerSuccessResponse: {isinstance(self.Response, CustomerSuccessResponse)}")
-        print(f"Response dict: {self.Response.model_dump() if hasattr(self.Response, 'model_dump') else 'No model_dump'}")
-        
+        print(
+            f"Is CustomerSuccessResponse: {isinstance(self.Response, CustomerSuccessResponse)}"
+        )
+        print(
+            f"Response dict: {self.Response.model_dump() if hasattr(self.Response, 'model_dump') else 'No model_dump'}"
+        )
+
         if isinstance(self.Response, CustomerSuccessResponse):
             return self.Response.kimCustomerId
         raise ValueError("No customer found")
@@ -316,16 +314,16 @@ async def get_customer_by_personal_number(
 
     response.raise_for_status()
     raw_response = response.json()
-    
+
     print(f"\nDEBUG - Initial API Response for {personal_number}:")
     print(json.dumps(raw_response, indent=2))
-    
+
     # Parse the Response field which is always a JSON string
     response_data = json.loads(raw_response["Response"])
-    
+
     print("\nDEBUG - Parsed Response data:")
     print(json.dumps(response_data, indent=2))
-    
+
     # If it's a 404, it should be mapped to CustomerErrorResponse
     if raw_response["ResponseStatus"] == 404:
         raw_response["Response"] = response_data  # Already parsed error response
@@ -337,20 +335,22 @@ async def get_customer_by_personal_number(
             print("DEBUG - Response data before mapping:", response_data)
             raw_response["Response"] = response_data  # CustomerSuccessResponse
             print("\nDEBUG - Mapped to CustomerSuccessResponse")
-            print("DEBUG - Response type after mapping:", type(raw_response["Response"]))
+            print(
+                "DEBUG - Response type after mapping:", type(raw_response["Response"])
+            )
         else:
             raw_response["Response"] = {"items": []}  # CustomerEmptyResponse
             print("\nDEBUG - Mapped to CustomerEmptyResponse")
-            
+
     print("\nDEBUG - Final data being sent to ActionDataResponse:")
     print(json.dumps(raw_response, indent=2))
-            
+
     result = ActionDataResponse.model_validate(raw_response)
     print("\nDEBUG - After Pydantic validation:")
     print(f"Response discriminator type: {type(result.Response)}")
     print(f"Response data: {result.Response}")
     print(f"Raw dict: {result.model_dump()}")
-            
+
     return result
 
 
@@ -361,41 +361,43 @@ async def create_member(
 ) -> dict[str, Any]:
     """
     Create a new member using the coop_ActionDataFunction endpoint.
-    
+
     Args:
         kim_customer_id: The KIM customer ID from CustomerSuccessResponse
         channel: The channel through which the membership is being created
         api: CrmApi instance for making the request
-        
+
     Returns:
         The parsed JSON response from the API
-        
+
     Raises:
         HTTPError: If the request fails
         ValueError: If response status is not 201
     """
     payload = create_member_payload(str(kim_customer_id), channel)
-    
-    logger.debug(f"Sending create member request for KIM ID {kim_customer_id}, channel {channel}")
-    
+
+    logger.debug(
+        f"Sending create member request for KIM ID {kim_customer_id}, channel {channel}"
+    )
+
     response = await api.request(
         path="/api/data/v9.1/coop_ActionDataFunction",
         method="POST",
         data=payload,
     )
-    
+
     try:
         response.raise_for_status()
         response_data = response.json()
-        
+
         # Check for specific success status code
         if response.status_code != 201:
             error_msg = f"Failed to create member - expected status 201, got {response.status_code}"
             logger.error(f"{error_msg}. Response: {response_data}")
             raise ValueError(error_msg)
-            
+
         return response_data
-        
+
     except Exception as e:
         logger.error(f"Failed to create member for KIM ID {kim_customer_id}: {e}")
         raise
