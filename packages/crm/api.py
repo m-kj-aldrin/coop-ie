@@ -150,10 +150,10 @@ class CrmApi:
         try:
             params = compile_odata_params(odata)
 
-            endpoint = odata.entity
+            endpoint = odata.entity + "s"
 
             if odata.id:
-                endpoint = f"{endpoint}s({odata.id})"
+                endpoint = f"({odata.id})"
 
             return await self.get(endpoint=endpoint, parameters=params)
         except Exception as e:

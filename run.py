@@ -1,5 +1,5 @@
 # from app.main import main
-from app.get_subjects import main
+from scripts.get_subjects import main
 import asyncio
 
 if __name__ == "__main__":

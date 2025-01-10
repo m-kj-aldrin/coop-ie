@@ -8,11 +8,13 @@ from collections.abc import MutableMapping
 from typing import Literal
 import json
 from packages.crm.types import RecordType, SubjectType, SubjectKeys
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from datetime import datetime
 from typing import List
 import httpx
 import asyncio
+from typing import Annotated
+from pydantic import Field
 
 
 @dataclass
@@ -207,7 +209,7 @@ class CustomerAddress(BaseModel):
 
 
 class CustomerSuccessResponse(BaseModel):
-    type: Literal["physical-person"]  # This acts as a discriminator
+    type: Literal["physical-person"]
     status: str
     personalIdNumber: str
     firstName: str
@@ -221,33 +223,19 @@ class CustomerSuccessResponse(BaseModel):
 
 
 class CustomerErrorResponse(BaseModel):
+    timestamp: str
     status: int
     error: str
     message: str
     path: str
-    timestamp: str
 
 
 class ActionDataResponse(BaseModel):
     ResponseStatus: int
     Response: Union[CustomerSuccessResponse, CustomerErrorResponse]
 
-    model_config = {
-        "json_schema_extra": {
-            "discriminator": {
-                "property_name": "type",
-                "mapping": {
-                    "physical-person": CustomerSuccessResponse,
-                },
-            }
-        }
-    }
-
     def is_customer_without_membership(self) -> bool:
         """Case 1: Customer exists but has no membership (status 200, CustomerSuccessResponse with no mmId)"""
-        print(f"\nDEBUG - is_customer_without_membership check:")
-        print(f"Response type: {type(self.Response)}")
-        print(f"Response data: {self.Response}")
         return (
             self.ResponseStatus == 200
             and isinstance(self.Response, CustomerSuccessResponse)
@@ -270,16 +258,6 @@ class ActionDataResponse(BaseModel):
 
     def get_kim_customer_id(self) -> int:
         """Get KIM ID for existing customers (Cases 1 & 2)"""
-        print(f"\nDEBUG - get_kim_customer_id:")
-        print(f"Response type: {type(self.Response)}")
-        print(f"Response: {self.Response}")
-        print(
-            f"Is CustomerSuccessResponse: {isinstance(self.Response, CustomerSuccessResponse)}"
-        )
-        print(
-            f"Response dict: {self.Response.model_dump() if hasattr(self.Response, 'model_dump') else 'No model_dump'}"
-        )
-
         if isinstance(self.Response, CustomerSuccessResponse):
             return self.Response.kimCustomerId
         raise ValueError("No customer found")

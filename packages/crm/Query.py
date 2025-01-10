@@ -35,7 +35,7 @@ class CRMQuery:
             filter=[
                 f"_owningteam_value eq '{MEDLEMSSERVICE_ID}' and {EXCLUDE_STRING} and statecode eq 0",
             ],
-            orderby=["createdon desc"],
+            orderby=["createdon asc"],
             top=4,
             expand=[
                 OData(

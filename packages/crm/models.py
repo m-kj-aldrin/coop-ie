@@ -31,7 +31,7 @@ class Incident(BaseModel):
     @classmethod
     def parse_html_description(cls, value: str | None) -> str | None:
         """Parse HTML description using IncidentHtmlDescriptionParser."""
-        logger.info(f"Parsing HTML description: {value}")
+        # logger.debug(f"Parsing HTML description: {value}")
         if value is None:
             return None
         return IncidentHtmlDescriptionParser.parse_text(value)
