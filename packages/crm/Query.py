@@ -17,7 +17,6 @@ UserQueriesMap: dict[UserQueries, str] = {
 class CRMQuery:
     _api: CrmApi
 
-
     def __init__(self, api: CrmApi):
         self._api = api
 
@@ -28,15 +27,16 @@ class CRMQuery:
         response = await self._api.get(endpoint, parameters=[("userQuery", query)])
         return response
 
-    async def get_latest_incident(self):
+    async def get_latest_incident(self, top=10):
         odata = OData(
             entity="incident",
             select=["title", "incidentid", "ticketnumber", "description"],
             filter=[
-                f"_owningteam_value eq '{MEDLEMSSERVICE_ID}' and {EXCLUDE_STRING} and statecode eq 0",
+                f"_owningteam_value eq '{MEDLEMSSERVICE_ID}' and {
+                    EXCLUDE_STRING} and statecode eq 0",
             ],
             orderby=["createdon asc"],
-            top=4,
+            top=top,
             expand=[
                 OData(
                     entity="customerid_contact",
@@ -53,6 +53,8 @@ class CRMQuery:
         response = await self._api.OData_request(odata=odata)
 
         text = response.text
+
+        logger.debug(f"Response text: {text}")
 
         try:
             return ODataResponse[Incident].model_validate_json(text)

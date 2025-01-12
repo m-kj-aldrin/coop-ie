@@ -64,9 +64,9 @@ Always answer in English even though some parts of the codebase are in Swedish a
 
 8. **Project Structure and Maintainability**
     - Store actions, data classes (e.g., `Action`, `OData`), and supporting utilities in logically separated modules:
-        - `packages.crm` for "actions" like updating or closing incidents.
         - `packages.crm` for CRM API code and OData utilities.
-        - `packages.llm` for all LLM-related functionality.
+        - `packages.crm.actions` for "actions" like updating or closing incidents.
+        - `packages.agents` for all LLM-related functionality.
     - Use **Python 3.12+** and **type hints** across all code, including function parameters and return types.
     - Use **Pydantic v2** for all data modeling and validation:
         - Follow Pydantic v2 patterns for model definitions (e.g., using `model_config` instead of `Config` class)
@@ -80,7 +80,6 @@ Always answer in English even though some parts of the codebase are in Swedish a
         - Use dataclasses for internal data structures that:
             - Don't require validation
             - Are used for internal state management
-            - Example: The `OData` and `Action` classes in `packages/crm/odata.py` and `packages/crm/actions.py`
     - Provide comprehensive docstrings for each action or utility function to facilitate future maintenance and onboarding.
     - Write targeted unit or integration tests for the business logic (e.g., testing `close_incident()` logic or `update_incident()` with mocked CRM responses).
 

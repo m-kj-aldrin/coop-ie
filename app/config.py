@@ -27,6 +27,8 @@ class Config(metaclass=Singleton):
     def load(cls):
         _ = load_dotenv()
 
+        # logger.debug(f"Using OpenAI API key: {os.getenv('OPENAI_API_KEY')}")
+
         required_vars = {
             "base_url": os.getenv("BASE_URL", ""),
             "api_data_endpoint": os.getenv("API_DATA_ENDPOINT", "").lstrip("/"),

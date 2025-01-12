@@ -24,6 +24,7 @@ async def setup():
             authenticator=authenticator,
         )
 
+        logger.info(f"Setup successful")
         return api
     except Exception as e:
         logger.error(f"Setup failed: {e}")

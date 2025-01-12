@@ -17,21 +17,26 @@ class ODataResponse(BaseModel, Generic[T]):
 
 class Contact(BaseModel):
     contactid: str
-    mmid: str | None = Field(alias="coop_external_customer_id", default=None)
+    mmid: Optional[str] = Field(alias="coop_external_customer_id", default=None)
+    email: Optional[str] = Field(alias="emailaddress1", default=None)
     fullname: str
-    email: str | None = Field(alias="emailaddress1", default=None)
+
+    class Config:
+        allow_population_by_field_name = True  # Allows using field names for deserialization
 
 
 class Incident(BaseModel):
     title: str
-    description: str | None = None
-    contact: Contact | None = Field(alias="customerid_contact", default=None)
+    description: Optional[str] = None
+    contact: Optional[Contact] = Field(alias="customerid_contact", default=None)
+
+    class Config:
+        allow_population_by_field_name = True
 
     @field_validator("description", mode="after")
     @classmethod
-    def parse_html_description(cls, value: str | None) -> str | None:
+    def parse_html_description(cls, value: Optional[str]) -> Optional[str]:
         """Parse HTML description using IncidentHtmlDescriptionParser."""
-        # logger.debug(f"Parsing HTML description: {value}")
         if value is None:
             return None
         return IncidentHtmlDescriptionParser.parse_text(value)
