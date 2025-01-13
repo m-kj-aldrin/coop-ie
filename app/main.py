@@ -6,7 +6,7 @@ from app.logger import logger
 from app.processes.handle_creation_failure import handle_creation_failure
 from packages.agents.categorizer import IncidentCategorizer
 from packages.crm.Query import CRMQuery
-from packages.crm.models import Incident
+from packages.crm.models import Contact, Incident
 
 # Load configuration and environment variables
 # config = Config.load()g
@@ -35,11 +35,22 @@ async def main() -> None:
         #         logger.debug(f"Latest incidents: {latest}")
         #         json.dump(latest.model_dump(by_alias=False), f, ensure_ascii=False, indent=4)
         #         logger.info("Latest incidents saved to latest_incidents.json")
-        # latest = None
-        # with open("app/data/latest_incidents.json", "r") as f:
-        #     latest = json.load(f)
-        #     # logger.debug(f"Loaded latest incidents: {latest}")
-
+        latest = None
+        with open("app/data/latest_incidents.json", "r") as f:
+            latest = json.load(f)
+            # logger.debug(f"Loaded latest incidents: {latest}")
+        data = {
+            "title": "*Övriga ärenden",
+            "description": "Meddelande\nHej\nJag har blivit förvaltare åt min mormor Inga och undrar hur jag går tillväga för att bl.a. få tillgång till hur mycket hon har på sitt kort.\nSka jag maila ett kort på beslutet från tingsrätten?\nMvh / Therese",
+            "contact": {
+                "contactid": "ca8437d9-30c6-e311-83d5-005056865f8d",
+                "coop_external_customer_id": "3932367",
+                "emailaddress1": "rumpkullandalarna@gmail.com",
+                "fullname": "Inga Gillsberg"
+            }
+        }
+        incident = Incident(**data)
+        logger.debug(f"Processing incident: {incident}")
         # if latest:
         #     latest = latest["value"]
         #     latest = latest[:1]
@@ -47,32 +58,28 @@ async def main() -> None:
         #     categorizer = IncidentCategorizer()
         #     results = []
         #     for _incident in latest:
-        #         logger.debug(f"Processing incident: {_incident}")
-        #         incident = Incident(**_incident)
-        #         # Use model_dump to exclude the nested field
-        #         # incident_dict = incident.model_dump(exclude={"contact": {"contactid"}})
-        #         # test = json.dumps(incident_dict, ensure_ascii=False)
-        #         # logger.debug(f"Processing incident: {test}, type {type(test)}")
-        #         logger.debug(f"Processing incident: {incident}")
-        #         result = await categorizer.categorize(incident)
-        #         # data = result.data.model_dump()
+        #         # Ensure you are using the correct field names or aliases
+        #         i1 = Incident(**_incident)
+        #         logger.debug(f"Processing incident: {i1.model_dump(by_alias=False)}")
 
-        #     #     # Add the correct_answer key with an empty structure
-        #     #     data["correct_answer"] = empty_categorize_result()
+        #     result = await categorizer.categorize(incident)
+        #     data = result.data.model_dump()
+        #     logger.debug(f"Categorize result: {data}")
 
-        #     #     results.append(data)
-        #     #     # print(result.data)
+        #     data["correct_answer"] = empty_categorize_result()
 
-        #     # with open("app/data/results.json", "w") as f:
-        #     #     json.dump(results, f, ensure_ascii=False, indent=4)
+        #     results.append(data)
 
-        #     # Uncomment to print the incidents
-        #     # print(latest.value)
-        #     # for incident in latest.value:
-        #     #     print(incident)
-        #     #     print("\n\n")
+        # with open("app/data/results.json", "w") as f:
+        #     json.dump(results, f, ensure_ascii=False, indent=4)
 
-        # # await handle_creation_failure(api)
+        # Uncomment to print the incidents
+        # print(latest.value)
+        # for incident in latest.value:
+        #     print(incident)
+        #     print("\n\n")
+
+        # await handle_creation_failure(api)
 
     except Exception as e:
         logger.error(f"Application error: {e}")

@@ -84,7 +84,7 @@ class Authenticate:
                 logger.debug("Launching browser")
 
                 browser = await playwright.chromium.launch(
-                    headless=False,
+                    headless=True,
                     channel="chrome",
                     args=[
                         "--start-maximized",

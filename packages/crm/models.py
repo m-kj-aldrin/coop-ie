@@ -1,5 +1,5 @@
 from typing import Generic, TypeVar
-from pydantic import BaseModel, field_validator, Field
+from pydantic import BaseModel, field_validator, Field, ConfigDict
 from packages.crm.types import SubjectType
 from packages.utils.html_parser import IncidentHtmlDescriptionParser
 from dataclasses import asdict, dataclass
@@ -21,8 +21,7 @@ class Contact(BaseModel):
     email: Optional[str] = Field(alias="emailaddress1", default=None)
     fullname: str
 
-    class Config:
-        allow_population_by_field_name = True  # Allows using field names for deserialization
+    model_config = ConfigDict(populate_by_name=True)  # Updated for Pydantic v2
 
 
 class Incident(BaseModel):
@@ -30,8 +29,7 @@ class Incident(BaseModel):
     description: Optional[str] = None
     contact: Optional[Contact] = Field(alias="customerid_contact", default=None)
 
-    class Config:
-        allow_population_by_field_name = True
+    model_config = ConfigDict(populate_by_name=True)  # Updated for Pydantic v2
 
     @field_validator("description", mode="after")
     @classmethod
