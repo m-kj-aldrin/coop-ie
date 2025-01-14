@@ -1,0 +1,48 @@
+Samla data från och med 2025-01-13, då det är då jag börjar dokumentera ärenden.
+
+**kategorier**
+
+saldo - föreningen - dödsbo
+saldo - otydlig kontotyp
+saldo - poäng
+saldo - coop matkonto
+
+avslut - medlemskap
+avslut - medlemskap - bekräftelse på avslut
+avslut - dödsbo
+avslut - dödsbo - bekräftelse på avslut
+avslut - dödsbo - återutbetalning
+avslut - dödsbo - rensat
+
+bli medlem - hur blir jag medlem
+bli medlem - coop.se
+bli medlem - ansökan har ej blivit registrerad - utländsk
+bli medlem - ansökan har ej blivit registrerad - ej folkbokförd
+bli medlem - utländsk
+
+medlemskap - hushållskoppling
+medlemskap - registrera personnummer
+medlemskap - koppla kort - ta bort
+medlemskap - adress
+medlemskap - saknar medlemskap
+medlemskap - byta förening
+medlemskap - utländsk - mecenat
+medlemskap - mmid
+medlemskap - ny medlem tidigare extrakort - saknar medlemskort
+
+kundkonto - koppla medlemskap
+
+medlemshushåll - vem är kopplad till hushåll
+medlemshushåll - koppla bort
+medlemshushåll - koppla till
+
+vidarekoppling - matkonto
+
+Coop MasterCard - ansöka om kort
+Coop Matkonto - borttappat kort
+
+
+
+**log**
+
+log för att förklara vad det handlar om
