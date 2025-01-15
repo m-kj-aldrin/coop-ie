@@ -1,4 +1,4 @@
-Samla data från och med 2025-01-13, då det är då jag börjar dokumentera ärenden.
+2Samla data från och med 2025-01-13, då det är då jag börjar dokumentera ärenden.
 
 **kategorier**
 
@@ -19,16 +19,24 @@ bli medlem - coop.se
 bli medlem - ansökan har ej blivit registrerad - utländsk
 bli medlem - ansökan har ej blivit registrerad - ej folkbokförd
 bli medlem - utländsk
+bli medlem - ej folkbokförd
 
 medlemskap - hushållskoppling
 medlemskap - registrera personnummer
 medlemskap - koppla kort - ta bort
 medlemskap - adress
+
+medlemskap - kort - nytt kort
+medlemskap - kort - ny medlem tidigare extrakort
+
 medlemskap - saknar medlemskap
+medlemskap - saknar medlemskap - tidigare extrakort
+
 medlemskap - byta förening
 medlemskap - utländsk - mecenat
 medlemskap - mmid
 medlemskap - ny medlem tidigare extrakort - saknar medlemskort
+medlemskap - skyddade uppgifter - byta namn
 
 kundkonto - koppla medlemskap
 
